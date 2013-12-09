@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#eee">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:orientation="vertical"
+            android:background="@drawable/bg">
+
+            <ImageView
+                android:id="@+id/imgSugimoriArt"
+                android:layout_height="250dp"
+                android:layout_width="250dp"
+                android:layout_gravity="center"
+                android:contentDescription="@string/imgSugimoriDesc"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/boxSprite"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="3dp"
+            android:orientation="vertical"
+            android:background="@drawable/bg">
+
+            <TextView
+                android:id="@+id/txtSprite"
+                android:text="@string/txtSprite"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:gravity="center"
+                android:textStyle="bold"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Space style="@style/fillingSpace"/>
+
+                <ImageView
+                    android:id="@+id/imgFront"
+                    android:layout_height="90dp"
+                    android:layout_width="90dp"
+                    android:contentDescription="@string/imgSpriteDesc"/>
+
+                <Space style="@style/fillingSpace"/>
+
+                <ImageView
+                    android:id="@+id/imgBack"
+                    android:layout_height="90dp"
+                    android:layout_width="90dp"
+                    android:contentDescription="@string/imgSpriteDesc"/>
+
+                <Space style="@style/fillingSpace"/>
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/txtSpriteFemale"
+                android:text="@string/txtSprite2"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:layout_marginTop="4dp"
+                android:visibility="gone"/>
+
+            <LinearLayout
+                android:id="@+id/boxFemale"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <Space style="@style/fillingSpace"/>
+
+                <ImageView
+                    android:id="@+id/imgFront2"
+                    android:layout_height="90dp"
+                    android:layout_width="90dp"
+                    android:contentDescription="@string/imgSpriteDesc"/>
+
+                <Space style="@style/fillingSpace"/>
+
+                <ImageView
+                    android:id="@+id/imgBack2"
+                    android:layout_height="90dp"
+                    android:layout_width="90dp"
+                    android:contentDescription="@string/imgSpriteDesc"/>
+
+                <Space style="@style/fillingSpace"/>
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/txtTap"
+                android:text="@string/txtTap"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:gravity="center"
+                android:textSize="10sp"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>

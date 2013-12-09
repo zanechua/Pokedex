@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Pokedex</string>
+
+    <!--Di row_layout.xml-->
+    <string name="iconDesc">Pokemon icon</string>
+
+    <!--Di page_appearance.xml-->
+    <string name="imgSugimoriDesc">Sugimori art</string>
+    <string name="imgSpriteDesc">Normal sprite image</string>
+    <string name="txtSprite">Normal</string>
+    <string name="txtSprite2">Female</string>
+    <string name="txtTap">tap to see shiny sprite</string>
+
+    <!--Di page_data.xml-->
+    <string name="nationalID">National ID</string>
+    <string name="japanese">Japanese</string>
+    <string name="species">Species</string>
+    <string name="type">Type</string>
+    <string name="height">Height</string>
+    <string name="weight">Weight</string>
+    <string name="habitat">Habitat</string>
+    <string name="shape">Body shape</string>
+    <string name="gender">Gender</string>
+    <string name="egg">Egg groups</string>
+    <string name="hatch">Hatch counter</string>
+    <string name="growth">Growth rate</string>
+    <string name="capture">Capture rate</string>
+
+    <!--Di page_stat.xml-->
+    <string name="baseEXP">Base EXP</string>
+    <string name="baseHappiness">Base happiness</string>
+    <string name="baseEffort">Base effort</string>
+    <string name="baseStat">Base Stats</string>
+    <string name="strong">Strong</string>
+    <string name="immune">Immune</string>
+    <string name="weak">Weak</string>
+    <string name="txtEfficacy">Offence</string>
+    <string name="txtTapEfficacy">tap to see defence</string>
+
+    <!--Di page_move.xml-->
+    <string name="txtTapMove">tap to filter</string>
+
+    <!--Di dialog_move_detail.xml-->
+    <string name="move_type">Type</string>
+    <string name="move_category">Category</string>
+    <string name="move_power">Power</string>
+    <string name="move_accuracy">Accuracy</string>
+    <string name="move_pp">PP</string>
+    <string name="move_ailment">Ailment</string>
+    <string name="move_target">Target</string>
+
+</resources>
+
+

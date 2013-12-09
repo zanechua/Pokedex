@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg">
+
+    <ImageView
+        android:id="@+id/imgRowIcon"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:contentDescription="@string/iconDesc"
+        android:layout_height="60dp"
+        android:layout_width="60dp"
+        android:layout_marginRight="5dp"/>
+
+    <TextView
+        android:id="@+id/txtRowID"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@id/imgRowIcon"
+        android:layout_height="35dp"
+        android:layout_width="wrap_content"
+        android:singleLine="true"
+        android:gravity="center_vertical"/>
+
+    <TextView
+        android:id="@+id/txtRowNama"
+        android:layout_toRightOf="@id/txtRowID"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:singleLine="true"
+        android:textSize="20sp"
+        android:gravity="center_vertical"/>
+
+    <TextView
+        android:id="@+id/txtRowType1"
+        android:layout_toRightOf="@id/imgRowIcon"
+        android:layout_below="@id/txtRowNama"
+        android:layout_width="50dp"
+        android:layout_height="20dp"
+        style="@style/basicType"/>
+
+    <TextView
+        android:id="@+id/txtRowType2"
+        android:layout_toRightOf="@id/txtRowType1"
+        android:layout_below="@id/txtRowNama"
+        android:layout_marginLeft="6dp"
+        android:layout_width="50dp"
+        android:layout_height="20dp"
+        style="@style/basicType"/>
+
+</RelativeLayout>

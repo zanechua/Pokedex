@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#eee">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp">
+
+        <LinearLayout
+            android:id="@+id/boxNationalID"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg"
+            android:layout_marginBottom="5dp">
+
+            <TextView
+                android:id="@+id/lblNationalID"
+                style="@style/columnDexStyle"
+                android:text="@string/nationalID"/>
+
+            <TextView
+                android:id="@+id/txtNationalID"
+                style="@style/defaultStyle"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/boxDexNumber"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg"
+            android:layout_marginBottom="5dp"/>
+
+        <TextView
+            android:id="@+id/txtPokemonDescription"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:background="@drawable/bg"
+            android:layout_marginBottom="5dp"
+            android:lineSpacingExtra="4dp"
+            android:gravity="center"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg"
+            android:layout_marginBottom="5dp">
+
+            <TextView
+                android:id="@+id/lblJapaneseName"
+                style="@style/columnStyle"
+                android:text="@string/japanese"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"/>
+
+            <TextView
+                android:id="@+id/txtJapaneseName"
+                style="@style/defaultStyle"
+                android:layout_toRightOf="@id/lblJapaneseName"
+                android:layout_alignParentTop="true"
+                android:layout_marginBottom="16dp"/>
+
+            <TextView
+                android:id="@+id/lblSpecies"
+                style="@style/columnStyle"
+                android:text="@string/species"
+                android:layout_below="@id/txtJapaneseName"/>
+
+            <TextView
+                android:id="@+id/txtSpecies"
+                style="@style/defaultStyle"
+                android:layout_toRightOf="@id/lblSpecies"
+                android:layout_below="@id/txtJapaneseName"
+                android:layout_marginBottom="16dp"/>
+
+            <TextView
+                android:id="@+id/lblHabitat"
+                style="@style/columnStyle"
+                android:text="@string/habitat"
+                android:layout_below="@id/txtSpecies"/>
+
+            <TextView
+                android:id="@+id/txtHabitat"
+                style="@style/defaultStyle"
+                android:layout_toRightOf="@id/lblHabitat"
+                android:layout_below="@id/txtSpecies"
+                android:layout_marginBottom="16dp"/>
+
+            <TextView
+                android:id="@+id/lblType"
+                style="@style/columnStyle"
+                android:text="@string/type"
+                android:layout_below="@id/txtHabitat"/>
+
+            <TextView
+                android:id="@+id/txtPokemonType1"
+                android:layout_width="50dp"
+                android:layout_height="20dp"
+                style="@style/basicType"
+                android:layout_marginRight="16dp"
+                android:layout_toRightOf="@id/lblType"
+                android:layout_below="@id/txtHabitat"
+                android:layout_marginBottom="16dp"/>
+
+            <TextView
+                android:id="@+id/txtPokemonType2"
+                android:layout_width="50dp"
+                android:layout_height="20dp"
+                style="@style/basicType"
+                android:layout_toRightOf="@id/txtPokemonType1"
+                android:layout_below="@id/txtHabitat"/>
+
+            <TextView
+                android:id="@+id/lblHeight"
+                style="@style/columnStyle"
+                android:text="@string/height"
+                android:layout_below="@id/txtPokemonType1"/>
+
+            <TextView
+                android:id="@+id/txtHeight"
+                style="@style/defaultStyle"
+                android:layout_toRightOf="@id/lblHeight"
+                android:layout_below="@id/txtPokemonType1"
+                android:layout_marginBottom="16dp"/>
+
+            <TextView
+                android:id="@+id/lblWeight"
+                style="@style/columnStyle"
+                android:text="@string/weight"
+                android:layout_below="@id/txtHeight"/>
+
+            <TextView
+                android:id="@+id/txtWeight"
+                style="@style/defaultStyle"
+                android:layout_toRightOf="@id/lblWeight"
+                android:layout_below="@id/txtHeight"
+                android:layout_marginBottom="16dp"/>
+
+            <TextView
+                android:id="@+id/lblShape"
+                style="@style/columnStyle"
+                android:text="@string/shape"
+                android:layout_below="@id/txtWeight"/>
+
+            <TextView
+                android:id="@+id/txtShape"
+                style="@style/defaultStyle"
+                android:layout_toRightOf="@id/lblShape"
+                android:layout_below="@id/txtWeight"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg"
+            android:layout_marginBottom="5dp">
+
+            <TextView
+                android:id="@+id/lblGender"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                style="@style/columnStyle"
+                android:text="@string/gender"/>
+
+            <TextView
+                android:id="@+id/txtGender"
+                style="@style/defaultStyle"
+                android:layout_toRightOf="@id/lblGender"
+                android:layout_marginBottom="16dp"/>
+
+            <TextView
+                android:id="@+id/lblEgg"
+                style="@style/columnStyle"
+                android:text="@string/egg"
+                android:layout_below="@id/txtGender"/>
+
+            <TextView
+                android:id="@+id/txtEgg"
+                style="@style/defaultStyle"
+                android:layout_toRightOf="@id/lblEgg"
+                android:layout_below="@id/txtGender"
+                android:layout_marginBottom="16dp"/>
+
+            <TextView
+                android:id="@+id/lblHatch"
+                style="@style/columnStyle"
+                android:text="@string/hatch"
+                android:layout_below="@id/txtEgg"/>
+
+            <TextView
+                android:id="@+id/txtHatch"
+                style="@style/defaultStyle"
+                android:layout_toRightOf="@id/lblHatch"
+                android:layout_below="@id/txtEgg"
+                android:layout_marginBottom="16dp"/>
+
+            <TextView
+                android:id="@+id/lblGrowth"
+                style="@style/columnStyle"
+                android:text="@string/growth"
+                android:layout_below="@id/txtHatch"/>
+
+            <TextView
+                android:id="@+id/txtGrowth"
+                style="@style/defaultStyle"
+                android:layout_toRightOf="@id/lblGrowth"
+                android:layout_below="@id/txtHatch"
+                android:layout_marginBottom="16dp"/>
+
+            <TextView
+                android:id="@+id/lblCapture"
+                style="@style/columnStyle"
+                android:text="@string/capture"
+                android:layout_below="@id/txtGrowth"/>
+
+            <TextView
+                android:id="@+id/txtCapture"
+                style="@style/defaultStyle"
+                android:layout_toRightOf="@id/lblCapture"
+                android:layout_below="@id/txtGrowth"/>
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/boxAbility"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg"
+            android:layout_marginBottom="5dp"/>
+
+    </LinearLayout>
+
+</ScrollView>
