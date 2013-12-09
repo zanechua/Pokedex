@@ -37,6 +37,10 @@ Database, image, and sprites for this application is taken from :
 * [LegendaryPokemon](http://www.legendarypokemon.net/), where I took some of Sugimori Art
 * [Serebii](http://www.serebii.net), where I took some sprites for Pokémon X/Y and Mega Evolution
 
+Acknowledgements
+---------------
+In this app, I use [Android SQLiteAssetHelper](https://github.com/jgilfelt/android-sqlite-asset-helper) library (created by [Jeff Gilfelt](https://github.com/jgilfelt).
+
 License
 ----------
     This program is free software: you can redistribute it and/or modify
