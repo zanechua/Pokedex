@@ -39,7 +39,7 @@ Database, image, and sprites for this application is taken from :
 
 Acknowledgements
 ---------------
-In this app, I use [Android SQLiteAssetHelper](https://github.com/jgilfelt/android-sqlite-asset-helper) library (created by [Jeff Gilfelt](https://github.com/jgilfelt).
+In this app, I use [Android SQLiteAssetHelper](https://github.com/jgilfelt/android-sqlite-asset-helper) library (created by [Jeff Gilfelt](https://github.com/jgilfelt)).
 
 License
 ----------
