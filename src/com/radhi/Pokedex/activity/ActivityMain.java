@@ -1,28 +1,30 @@
 package com.radhi.Pokedex.activity;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.SearchView;
 import com.radhi.Pokedex.R;
 import com.radhi.Pokedex.fragment.*;
+import com.radhi.Pokedex.fragment.PokemonName.OnPokemonSelectedListener;
+import com.radhi.Pokedex.object.Pokemon;
 import com.radhi.Pokedex.other.Database;
-import com.radhi.Pokedex.other.Enum.NameType;
 import com.radhi.Pokedex.other.PagerAdapter;
 
 import java.util.List;
 import java.util.Vector;
 
-public class Main extends FragmentActivity implements PokemonName.OnPokemonSelectedListener {
+public class ActivityMain extends FragmentActivity implements OnPokemonSelectedListener {
+    public static final String POKEMON_DATA = "pokemon_data_from_main";
     public static final String POKEMON_ID = "pokemon_id_from_main";
     public static final String POKEMON_NAME = "pokemon_name_from_main";
-    public static final String POKEMON_ID_2 = "pokemon_id_for_fragment";
+    public static final String MOVE_DATA = "move_data_for_fragment";
     public static final String MOVE_ID = "move_id_for_dialog";
 
     @Override
@@ -76,31 +78,53 @@ public class Main extends FragmentActivity implements PokemonName.OnPokemonSelec
     }
 
     @Override
-    public void onPokemonSelected(String id) {
+    public void onPokemonSelected(String rowData) {
         ViewPager mPager = (ViewPager) findViewById(R.id.pager);
-        Log.println(Log.INFO,"PokemonName","List with id = " + id + " is selected");
+        String[] data = rowData.split(Database.SPLIT);
+        String ID = data[0];
+        String Name = data[1];
 
         if (mPager != null) {
-            if (mPager.getBackground() != null) mPager.setBackground(null);
+            if (mPager.getBackground() != null) mPager.setBackgroundDrawable(null);
             if (mPager.getChildCount() > 1) getSupportFragmentManager().getFragments().clear();
 
-            this.setTitle(new Database(this).getPokemonName(id,NameType.ENGLISH));
-
-            Bundle args = new Bundle();
-            args.putString(Main.POKEMON_ID_2, id);
-            List<Fragment> fragmentList = new Vector<Fragment>();
-            fragmentList.add(Fragment.instantiate(this, PokemonData2.class.getName(), args));
-            fragmentList.add(Fragment.instantiate(this, PokemonMove.class.getName(), args));
-
-            PagerAdapter mPagerAdapter = new PagerAdapter(getSupportFragmentManager(), fragmentList);
-            mPager.setAdapter(mPagerAdapter);
-            mPager.setOffscreenPageLimit(2);
-        }
-        else {
-            Intent intent = new Intent(Main.this, Details.class);
-            intent.putExtra(Main.POKEMON_ID,id);
-            intent.putExtra(Main.POKEMON_NAME,new Database(this).getPokemonName(id, NameType.ENGLISH));
+            this.setTitle(Name);
+            makePage make = new makePage();
+            make.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,ID);
+        } else {
+            Intent intent = new Intent(ActivityMain.this, ActivityDetails.class);
+            intent.putExtra(ActivityMain.POKEMON_ID,ID);
+            intent.putExtra(ActivityMain.POKEMON_NAME,Name);
             startActivity(intent);
+        }
+    }
+
+    public class makePage extends AsyncTask<String, Void, List<Fragment>> {
+        @Override
+        protected List<Fragment> doInBackground(String... ID) {
+            Pokemon pokemon = new Pokemon(getBaseContext(),ID[0]);
+            Bundle args = new Bundle();
+            args.putParcelable(ActivityMain.POKEMON_DATA,pokemon);
+
+            List<Fragment> fragmentList = new Vector<Fragment>();
+            fragmentList.add(Fragment.instantiate(getBaseContext(), PokemonAppearance.class.getName(), args));
+            fragmentList.add(Fragment.instantiate(getBaseContext(), PokemonData.class.getName(), args));
+            fragmentList.add(Fragment.instantiate(getBaseContext(), PokemonStat.class.getName(), args));
+            fragmentList.add(Fragment.instantiate(getBaseContext(), PokemonMove.class.getName(), args));
+
+            return fragmentList;
+        }
+
+        @Override
+        protected void onPreExecute() {}
+
+        @Override
+        protected void onPostExecute(List<Fragment> result) {
+            PagerAdapter mPagerAdapter = new PagerAdapter(getSupportFragmentManager(), result);
+            ViewPager mPager = (ViewPager) findViewById(R.id.pager);
+            mPager.setAdapter(mPagerAdapter);
+            mPager.setOffscreenPageLimit(4);
+            getWindow().setBackgroundDrawable(null);
         }
     }
 }
