@@ -35,13 +35,12 @@
     <string name="strong">Strong</string>
     <string name="immune">Immune</string>
     <string name="weak">Weak</string>
-    <string name="txtEfficacy">Offence</string>
-    <string name="txtTapEfficacy">tap to see defence</string>
+    <string name="txtDefenses">Type Defenses</string>
 
     <!--Di page_move.xml-->
     <string name="txtTapMove">tap to filter</string>
 
-    <!--Di dialog_move_detail.xml-->
+    <!--Di activity_move_detail.xml-->
     <string name="move_type">Type</string>
     <string name="move_category">Category</string>
     <string name="move_power">Power</string>
@@ -49,6 +48,10 @@
     <string name="move_pp">PP</string>
     <string name="move_ailment">Ailment</string>
     <string name="move_target">Target</string>
+
+    <!--Di fragment_move_detail.xml-->
+    <string name="list_machine">List of TM/HM</string>
+    <string name="txtOffenses">Type Offenses</string>
 
 </resources>
 
