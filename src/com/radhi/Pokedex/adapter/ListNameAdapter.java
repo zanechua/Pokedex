@@ -10,20 +10,16 @@ import android.widget.TextView;
 import com.radhi.Pokedex.R;
 import com.radhi.Pokedex.other.Database;
 import com.radhi.Pokedex.other.Enum.ImgSize;
-import com.radhi.Pokedex.other.Enum.NameType;
 
 public class ListNameAdapter extends ArrayAdapter<String> {
     private final Context context;
-    private final String[] valID;
-    private Database db;
+    private final String[] listName;
 
-    public ListNameAdapter(Context context, String[] valID) {
-        super(context, R.layout.row_pokemon_name, valID);
+    public ListNameAdapter(Context context, String[] listName) {
+        super(context, R.layout.row_pokemon_name, listName);
 
-        /**Buat database baru**/
-        db = new Database(context);
         this.context = context;
-        this.valID = valID;
+        this.listName = listName;
     }
 
     static class viewHolder {
@@ -54,21 +50,13 @@ public class ListNameAdapter extends ArrayAdapter<String> {
 
         viewHolder holder = (viewHolder) rowView.getTag();
 
-        /**Atur ID pokemon*/
-        String id = valID[position];
-        holder.txtRowID.setText(id + ".   ");
+        String[] dataRow = listName[position].split(Database.SPLIT);
 
-        /**Atur nama pokemon*/
-        String nm = db.getPokemonName(id, NameType.ENGLISH);
-        holder.txtRowName.setText(nm);
-
-        /**Atur tipe pokemon*/
-        String[] type = db.getPokemonType(id);
-        db.getTypeName(holder.txtRowType1, Integer.valueOf(type[0]));
-        db.getTypeName(holder.txtRowType2, Integer.valueOf(type[1]));
-
-        /**Atur gambar pokemon*/
-        db.setImageFromAssets(holder.imgRow, "sprites/normal/front/nf_" + id + ".png", ImgSize.SMALL);
+        holder.txtRowID.setText(dataRow[0] + ".   ");
+        holder.txtRowName.setText(dataRow[1]);
+        Database.setTypeName(holder.txtRowType1, Integer.valueOf(dataRow[2]));
+        Database.setTypeName(holder.txtRowType2, Integer.valueOf(dataRow[3]));
+        Database.setImage(holder.imgRow, "sprites/normal/front/nf_" + dataRow[0] + ".png", ImgSize.SMALL);
 
         return rowView;
     }

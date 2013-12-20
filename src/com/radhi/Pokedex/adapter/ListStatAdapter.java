@@ -8,12 +8,13 @@ import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.radhi.Pokedex.R;
+import com.radhi.Pokedex.other.Database;
 
-public class ListStatAdapter extends ArrayAdapter<String[]> {
+public class ListStatAdapter extends ArrayAdapter<String> {
     private final Context context;
-    private final String[][] stat;
+    private final String[] stat;
 
-    public ListStatAdapter(Context context, String[][] stat) {
+    public ListStatAdapter(Context context, String[] stat) {
         super(context, R.layout.row_pokemon_dex, stat);
 
         this.context = context;
@@ -45,14 +46,14 @@ public class ListStatAdapter extends ArrayAdapter<String[]> {
             v.txtMaxStat = (TextView) rowView.findViewById(R.id.txtMaxStat);
             rowView.setTag(v);
         }
-
         viewHolder holder = (viewHolder) rowView.getTag();
 
-        holder.lblStat.setText(stat[position][0]);
-        holder.txtStat.setText(stat[position][1]);
-        holder.txtMaxStat.setText(stat[position][2]);
+        String[] rowData = stat[position].split(Database.SPLIT);
+        holder.lblStat.setText(rowData[0]);
+        holder.txtStat.setText(rowData[1]);
+        holder.txtMaxStat.setText(rowData[2]);
 
-        float weight = (float)(Double.parseDouble(stat[position][1]) / Double.parseDouble(stat[position][2]) * 10);
+        float weight = (float)(Double.parseDouble(rowData[1]) / Double.parseDouble(rowData[2]) * 10);
 
         holder.graphStat.setLayoutParams(
                 new LinearLayout.LayoutParams(0,ViewGroup.LayoutParams.WRAP_CONTENT,weight));

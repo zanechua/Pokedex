@@ -9,11 +9,11 @@ import android.widget.TextView;
 import com.radhi.Pokedex.R;
 import com.radhi.Pokedex.other.Database;
 
-public class ListEfficacyAdapter extends ArrayAdapter<Double[]> {
+public class ListEfficacyAdapter extends ArrayAdapter<String> {
     private final Context context;
-    private final Double[][] efficacy;
+    private final String[] efficacy;
 
-    public ListEfficacyAdapter(Context context, Double[][] efficacy) {
+    public ListEfficacyAdapter(Context context, String[] efficacy) {
         super(context, R.layout.row_pokemon_dex, efficacy);
 
         this.context = context;
@@ -38,13 +38,13 @@ public class ListEfficacyAdapter extends ArrayAdapter<Double[]> {
         }
         viewHolder holder = (viewHolder) rowView.getTag();
 
-        new Database(context).getTypeName(holder.txtValEfficacy,efficacy[position][0].intValue());
+        String[] rowData = efficacy[position].split(Database.SPLIT);
+        Database.setTypeName(holder.txtValEfficacy, Integer.valueOf(rowData[0]));
         String currentText = holder.txtValEfficacy.getText().toString();
         String value;
-
-        if (efficacy[position][1] == 0.5) value = "½";
-        else if (efficacy[position][1] == 0.25) value = "¼";
-        else value = String.format("%.0f",efficacy[position][1]);
+        if (rowData[1].equals("0.5")) value = "½";
+        else if (rowData[1].equals("0.25")) value = "¼";
+        else value = rowData[1];
 
         holder.txtValEfficacy.setText(currentText + " " + value + " ×");
 

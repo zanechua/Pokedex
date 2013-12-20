@@ -8,12 +8,13 @@ import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.radhi.Pokedex.R;
+import com.radhi.Pokedex.other.Database;
 
-public class ListAbilityAdapter extends ArrayAdapter<String[]> {
+public class ListAbilityAdapter extends ArrayAdapter<String> {
     private final Context context;
-    private final String[][] ability;
+    private final String[] ability;
 
-    public ListAbilityAdapter(Context context, String[][] ability) {
+    public ListAbilityAdapter(Context context, String[] ability) {
         super(context, R.layout.row_pokemon_dex, ability);
 
         this.context = context;
@@ -41,19 +42,18 @@ public class ListAbilityAdapter extends ArrayAdapter<String[]> {
             v.txtAbilityDescription = (TextView) rowView.findViewById(R.id.txtAbilityDescription);
             rowView.setTag(v);
         }
-
         viewHolder holder = (viewHolder) rowView.getTag();
 
+        String[] rowData = ability[position].split(Database.SPLIT);
+
         String abilityName;
-        if (ability[position][1].equals("0")) abilityName = "Ability : ";
+        if (rowData[1].equals("0")) abilityName = "Ability : ";
         else abilityName = "Hidden Ability : ";
 
-        holder.lblAbilityName.setText(abilityName + ability[position][0]);
-        holder.txtAbilityDescription.setText(ability[position][2]);
+        holder.lblAbilityName.setText(abilityName + rowData[0]);
+        holder.txtAbilityDescription.setText(rowData[2]);
 
-        if (position == ability.length - 1) {
-            holder.rowAbility.setPadding(0,0,0,-4);
-        }
+        if (position == ability.length - 1) holder.rowAbility.setPadding(0,0,0,-4);
 
         return rowView;
     }

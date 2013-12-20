@@ -1,26 +1,20 @@
 package com.radhi.Pokedex.adapter;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.radhi.Pokedex.R;
-import com.radhi.Pokedex.other.Enum.NameType;
-import com.radhi.Pokedex.other.Enum.ImgSize;
+import com.radhi.Pokedex.other.Database;
 
-import java.io.IOException;
-import java.io.InputStream;
-
-public class ListDexAdapter extends ArrayAdapter<String[]> {
+public class ListDexAdapter extends ArrayAdapter<String> {
     private final Context context;
-    private final String[][] dexData;
+    private final String[] dexData;
 
-    public ListDexAdapter(Context context, String[][] dexData) {
+    public ListDexAdapter(Context context, String[] dexData) {
         super(context, R.layout.row_pokemon_dex, dexData);
 
         this.context = context;
@@ -48,11 +42,11 @@ public class ListDexAdapter extends ArrayAdapter<String[]> {
             v.txtDexNumber = (TextView) rowView.findViewById(R.id.txtDexNumber);
             rowView.setTag(v);
         }
-
         viewHolder holder = (viewHolder) rowView.getTag();
 
-        holder.lblDexName.setText(dexData[position][0] + " ID");
-        holder.txtDexNumber.setText(dexData[position][1]);
+        String[] rowData = dexData[position].split(Database.SPLIT);
+        holder.lblDexName.setText(rowData[0] + " ID");
+        holder.txtDexNumber.setText(rowData[1]);
 
         if (position == dexData.length - 1) holder.rowDex.setPadding(0,0,0,0);
 
