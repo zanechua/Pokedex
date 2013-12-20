@@ -105,7 +105,7 @@
                 android:layout_width="50dp"
                 android:layout_height="20dp"
                 style="@style/basicType"
-                android:layout_marginRight="16dp"
+                android:layout_marginRight="6dp"
                 android:layout_toRightOf="@id/lblType"
                 android:layout_below="@id/txtHabitat"
                 android:layout_marginBottom="16dp"/>

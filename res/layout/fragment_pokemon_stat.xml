@@ -80,7 +80,7 @@
             <TextView
                 android:id="@+id/lblTypeEfficacy"
                 style="@style/defaultStyle"
-                android:text="@string/txtEfficacy"
+                android:text="@string/txtDefenses"
                 android:textStyle="bold"
                 android:gravity="center"
                 android:layout_marginBottom="5dp"/>
@@ -110,32 +110,6 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/boxOffence"
-                style="@style/defaultStyle"
-                android:orientation="horizontal">
-
-                <LinearLayout
-                    android:id="@+id/boxOffenceStrong"
-                    style="@style/fillingSpace"
-                    android:orientation="vertical"
-                    android:paddingRight="2dp"/>
-
-                <LinearLayout
-                    android:id="@+id/boxOffenceImmune"
-                    style="@style/fillingSpace"
-                    android:orientation="vertical"
-                    android:paddingRight="2dp"
-                    android:paddingLeft="2dp"/>
-
-                <LinearLayout
-                    android:id="@+id/boxOffenceWeak"
-                    style="@style/fillingSpace"
-                    android:orientation="vertical"
-                    android:paddingLeft="2dp"/>
-
-            </LinearLayout>
-
-            <LinearLayout
                 android:id="@+id/boxDefence"
                 style="@style/defaultStyle"
                 android:orientation="horizontal">
@@ -160,14 +134,6 @@
                     android:paddingLeft="2dp"/>
 
             </LinearLayout>
-
-            <TextView
-                android:id="@+id/lblTapEfficacy"
-                style="@style/defaultStyle"
-                android:text="@string/txtTapEfficacy"
-                android:textSize="10sp"
-                android:gravity="center"
-                android:layout_marginTop="8dp"/>
 
         </LinearLayout>
 
