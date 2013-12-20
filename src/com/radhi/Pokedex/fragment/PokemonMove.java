@@ -9,24 +9,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 import com.radhi.Pokedex.R;
-import com.radhi.Pokedex.activity.Main;
+import com.radhi.Pokedex.activity.ActivityMain;
+import com.radhi.Pokedex.activity.ActivityMoveDetail;
 import com.radhi.Pokedex.adapter.ListMoveAdapter;
+import com.radhi.Pokedex.adapter.MoveSpinnerAdapter;
+import com.radhi.Pokedex.object.Pokemon;
 import com.radhi.Pokedex.other.Database;
-import com.radhi.Pokedex.activity.MoveDetail;
 
 public class PokemonMove extends Fragment {
     private Activity activity;
-    private String ID, Version, MoveMethod;
-    private Database DB;
+    private String ID, version, moveMethod;
     private ListMoveAdapter moveAdapter;
+    private Database DB;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        ID = getArguments().getString(Main.POKEMON_ID_2);
-        DB = new Database(activity);
-
         View view = inflater.inflate(R.layout.fragment_pokemon_move, container, false);
+        final Pokemon pokemon = getArguments().getParcelable(ActivityMain.POKEMON_DATA);
 
         final Spinner spinVersion = (Spinner) view.findViewById(R.id.spinVersion);
         final Spinner spinMoveMethod = (Spinner) view.findViewById(R.id.spinMoveMethod);
@@ -35,25 +35,20 @@ public class PokemonMove extends Fragment {
         final LinearLayout boxSpinner = (LinearLayout) view.findViewById(R.id.boxMoveSpinner);
         LinearLayout boxMove = (LinearLayout) view.findViewById(R.id.boxMoveFilter);
 
-        setSpinnerAdapter(spinVersion,DB.getPokemonMoveVersion(ID));
-        spinVersion.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Version = spinVersion.getSelectedItem().toString().split(" - ")[0];
-                setSpinnerAdapter(spinMoveMethod,DB.getPokemonMoveMethod(ID,Version));
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
-        });
+        setSpinnerAdapter(spinVersion,pokemon.AvailableMoveVersion(),"Pokémon");
+        setSpinnerAdapter(spinMoveMethod, pokemon.AvailableMoveMethod(),"");
+        DB = new Database(activity);
 
         boxMove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (spinVersion.isShown()) {
-                    Version = spinVersion.getSelectedItem().toString().split(" - ")[0];
-                    MoveMethod = spinMoveMethod.getSelectedItem().toString().split(" - ")[0];
-                    moveAdapter = new ListMoveAdapter(activity, DB.getMove(ID,Version,MoveMethod));
+                    ID = pokemon.ID();
+                    version = spinVersion.getSelectedItem().toString().split(Database.SPLIT)[0];
+                    moveMethod = spinMoveMethod.getSelectedItem().toString().split(Database.SPLIT)[0];
+
+                    moveAdapter = new ListMoveAdapter(
+                            activity, DB.getPokemonMoveList(ID,version,moveMethod));
                     listMove.setAdapter(moveAdapter);
 
                     lblTap.setText("tap to show filter box");
@@ -71,8 +66,8 @@ public class PokemonMove extends Fragment {
         listMove.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent=new Intent(activity,MoveDetail.class);
-                intent.putExtra(Main.MOVE_ID,listMove.getItemAtPosition(position).toString());
+                Intent intent = new Intent(activity, ActivityMoveDetail.class);
+                intent.putExtra(ActivityMain.MOVE_ID, listMove.getItemAtPosition(position).toString().split(Database.SPLIT)[0]);
                 startActivity(intent);
             }
         });
@@ -86,10 +81,8 @@ public class PokemonMove extends Fragment {
         this.activity = getActivity();
     }
 
-    private void setSpinnerAdapter(Spinner spin, String[] entries) {
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-                activity, android.R.layout.simple_spinner_item, entries);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+    private void setSpinnerAdapter(Spinner spin, String[] entries, String add) {
+        MoveSpinnerAdapter adapter = new MoveSpinnerAdapter(activity,entries,add);
         spin.setAdapter(adapter);
     }
 }

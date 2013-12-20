@@ -9,8 +9,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import com.radhi.Pokedex.R;
-import com.radhi.Pokedex.other.Database;
 import com.radhi.Pokedex.adapter.ListNameAdapter;
+import com.radhi.Pokedex.other.Database;
 
 public class PokemonName extends Fragment {
     private Activity activity;
@@ -27,14 +27,13 @@ public class PokemonName extends Fragment {
         listPokemon = (ListView) view.findViewById(R.id.listPokemon);
         DB = new Database(activity);
 
-        adapter = new ListNameAdapter(activity,DB.getPokemonID(""));
+        adapter = new ListNameAdapter(activity,DB.getPokemonList("%"));
         listPokemon.setAdapter(adapter);
 
         listPokemon.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String ID = listPokemon.getItemAtPosition(position).toString();
-                pokemonSelectedListener.onPokemonSelected(ID);
+                pokemonSelectedListener.onPokemonSelected(listPokemon.getItemAtPosition(position).toString());
             }
         });
 
@@ -42,7 +41,7 @@ public class PokemonName extends Fragment {
     }
 
     public interface OnPokemonSelectedListener {
-        public void onPokemonSelected(String id);
+        public void onPokemonSelected(String rowData);
     }
 
     @Override
@@ -54,7 +53,7 @@ public class PokemonName extends Fragment {
 
     public void filterList(String criteria) {
         if (view != null) {
-            adapter = new ListNameAdapter(activity,DB.getPokemonID(criteria));
+            adapter = new ListNameAdapter(activity,DB.getPokemonList("%" + criteria + "%"));
             listPokemon.setAdapter(adapter);
         }
     }
