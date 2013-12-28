@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 import com.radhi.Pokedex.other.Database;
-import com.radhi.Pokedex.other.Enum.*;
+import com.radhi.Pokedex.other.Enum.Effectiveness;
 
 public class Pokemon implements Parcelable {
     private String ID, EnglishName, JapaneseName, RomajiName, Species,
@@ -15,7 +15,7 @@ public class Pokemon implements Parcelable {
     private String[] DexNumber, Description, Ability, Stats,
             TypeOffenceEffective, TypeOffenceImmune, TypeOffenceWeak,
             TypeDefenceWeak, TypeDefenceImmune, TypeDefenceStrong,
-            AvailableMoveVersion, AvailableMoveMethod;
+            AvailableMoveVersion, AvailableMoveMethod, OtherForm;
 
     private Boolean hasGenderDifferences, formSwitchable;
 
@@ -55,21 +55,17 @@ public class Pokemon implements Parcelable {
         out.writeStringArray(TypeDefenceStrong);
         out.writeStringArray(AvailableMoveVersion);
         out.writeStringArray(AvailableMoveMethod);
+        out.writeStringArray(OtherForm);
         out.writeByte((byte) (hasGenderDifferences ? 1 : 0));
         out.writeByte((byte) (formSwitchable ? 1 : 0));
     }
 
-    public static final Parcelable.Creator<Pokemon> CREATOR
-            = new Parcelable.Creator<Pokemon>() {
+    public static final Parcelable.Creator<Pokemon> CREATOR = new Parcelable.Creator<Pokemon>() {
         @Override
-        public Pokemon createFromParcel(Parcel in) {
-            return new Pokemon(in);
-        }
+        public Pokemon createFromParcel(Parcel in) {return new Pokemon(in);}
 
         @Override
-        public Pokemon[] newArray(int size) {
-            return new Pokemon[size];
-        }
+        public Pokemon[] newArray(int size) {return new Pokemon[size];}
     };
 
     private Pokemon(Parcel in) {
@@ -104,6 +100,7 @@ public class Pokemon implements Parcelable {
         TypeDefenceStrong = in.createStringArray();
         AvailableMoveVersion = in.createStringArray();
         AvailableMoveMethod = in.createStringArray();
+        OtherForm = in.createStringArray();
         hasGenderDifferences = in.readByte() != 0;
         formSwitchable = in.readByte() != 0;
     }
@@ -146,6 +143,7 @@ public class Pokemon implements Parcelable {
         TypeDefenceStrong = DB.getPokemonEfficacy(Type1, Type2, Effectiveness.NOT_EFFECTIVE);
         AvailableMoveVersion = DB.getPokemonMoveVersion(ID);
         AvailableMoveMethod = DB.getPokemonMoveMethod(ID);
+        OtherForm = DB.getPokemonForm(ID,EnglishName);
 
         DB.close();
     }
@@ -243,4 +241,6 @@ public class Pokemon implements Parcelable {
     public String[] AvailableMoveVersion() {return AvailableMoveVersion;}
 
     public String[] AvailableMoveMethod() {return AvailableMoveMethod;}
+
+    public String[] OtherForm() {return OtherForm;}
 }
