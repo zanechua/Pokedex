@@ -78,7 +78,7 @@ public class Database extends SQLiteAssetHelper {
         name.close();
         return Name;
     }
-      
+
     public String getPokemonHabitat(String id) {
         Cursor habitat = getCursor("" +
                 "SELECT hb.name " +
@@ -280,9 +280,9 @@ public class Database extends SQLiteAssetHelper {
         if (c.moveToFirst()) {
             Ability = new String[c.getCount()];
             for (int n = 0; n < c.getCount(); n++) {
-                    Ability[n] = c.getString(0) + SPLIT +
-                            c.getString(1) + SPLIT +
-                            c.getString(2);
+                Ability[n] = c.getString(0) + SPLIT +
+                        c.getString(1) + SPLIT +
+                        c.getString(2);
 
                 c.moveToNext();
             }
@@ -411,15 +411,49 @@ public class Database extends SQLiteAssetHelper {
         if (c.moveToFirst()) {
             for (int n = 0; n < c.getCount(); n++) {
                 moveList[n] = c.getString(0) + SPLIT +
-                                c.getString(1) + SPLIT +
-                                c.getString(2) + SPLIT +
-                                c.getString(3);
+                        c.getString(1) + SPLIT +
+                        c.getString(2) + SPLIT +
+                        c.getString(3);
                 c.moveToNext();
             }
         }
 
         c.close();
         return moveList;
+    }
+
+    public String[] getPokemonForm(String id, String name) {
+        Cursor c;
+
+        c = getCursor("" +
+                "SELECT f.id, " +
+                "CASE LENGTH(nm.pokemon_name) WHEN 0 THEN '" + name + "' ELSE nm.pokemon_name END as Name, " +
+                "tp1.type_id, IFNULL(tp2.type_id,'0'), f.pokemon_id " +
+                "FROM pokemon as p " +
+                "LEFT JOIN pokemon_form as f " +
+                "ON p.id = f.pokemon_id " +
+                "LEFT JOIN pokemon_form_name as nm " +
+                "ON f.id = nm.pokemon_form_id " +
+                "LEFT JOIN  " +
+                "(SELECT pokemon_id, type_id FROM pokemon_type WHERE slot = 1) as tp1 " +
+                "ON p.id = tp1.pokemon_id " +
+                "LEFT JOIN  " +
+                "(SELECT pokemon_id, type_id FROM pokemon_type WHERE slot = 2) as tp2 " +
+                "ON p.id = tp2.pokemon_id " +
+                "WHERE p.species_id = ? ",new String[] {id});
+
+        String[] ID = new String[c.getCount()];
+        if (c.moveToFirst()) for (int n = 0; n < c.getCount(); n++) {
+            ID[n] = c.getString(0) + SPLIT +
+                    c.getString(1) + SPLIT +
+                    c.getString(2) + SPLIT +
+                    c.getString(3) + SPLIT +
+                    c.getString(4);
+            c.moveToNext();
+        }
+
+        c.close();
+        return ID;
     }
 
     public String getMoveData(String moveId) {
