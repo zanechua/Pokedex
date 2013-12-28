@@ -1,5 +1,6 @@
 package com.radhi.Pokedex.activity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -31,6 +32,13 @@ public class ActivityDetails extends FragmentActivity {
     }
 
     private class makePage extends AsyncTask<String, Void, List<Fragment>> {
+        ProgressDialog ringProgressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            ringProgressDialog = ProgressDialog.show(ActivityDetails.this, "Please wait...", "Loading data...");
+        }
+
         @Override
         protected List<Fragment> doInBackground(String... ID) {
             Pokemon pokemon = new Pokemon(getBaseContext(),ID[0]);
@@ -42,19 +50,19 @@ public class ActivityDetails extends FragmentActivity {
             fragmentList.add(Fragment.instantiate(getBaseContext(), PokemonData.class.getName(), args));
             fragmentList.add(Fragment.instantiate(getBaseContext(), PokemonStat.class.getName(), args));
             fragmentList.add(Fragment.instantiate(getBaseContext(), PokemonMove.class.getName(), args));
+            if (pokemon.OtherForm().length > 1)
+                fragmentList.add(Fragment.instantiate(getBaseContext(), PokemonForm.class.getName(), args));
 
             return fragmentList;
         }
 
         @Override
-        protected void onPreExecute() {}
-
-        @Override
         protected void onPostExecute(List<Fragment> result) {
+            ringProgressDialog.dismiss();
             PagerAdapter mPagerAdapter = new PagerAdapter(getSupportFragmentManager(), result);
             ViewPager mPager = (ViewPager) findViewById(R.id.pager);
             mPager.setAdapter(mPagerAdapter);
-            mPager.setOffscreenPageLimit(4);
+            mPager.setOffscreenPageLimit(5);
             getWindow().setBackgroundDrawable(null);
         }
     }
