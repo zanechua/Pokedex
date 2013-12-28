@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="app_name">Pokedex</string>
+<resources xmlns:xliff="http://schemas.android.com/apk/res/com.radhi.Pokedex">
+    <string name="app_name">Pokédex</string>
 
     <!--Di row_layout.xml-->
     <string name="iconDesc">Pokemon icon</string>
@@ -53,6 +53,20 @@
     <string name="list_machine">List of TM/HM</string>
     <string name="txtOffenses">Type Offenses</string>
 
+    <!--Di menu utama-->
+    <string name="search">Search</string>
+    <string name="download_image">Get Image</string>
+    <string name="download_art">Get Sugimori Art</string>
+    <string name="download_sprite">Get Pokémon Sprites</string>
+
+    <!--Di changelog-->
+    <string name="changelog_full_title">Change Log</string>
+    <string name="changelog_title">What\'s New</string>
+    <string name="changelog_ok_button">OK</string>
+    <string name="changelog_show_full">more…</string>
+    <string name="changelog_version_format">Version <xliff:g id="version_name">%s</xliff:g></string>
+
+    <color name="default_background">#eee</color>
 </resources>
 
 
