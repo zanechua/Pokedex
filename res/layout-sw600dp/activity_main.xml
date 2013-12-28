@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="horizontal"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <fragment
         android:name="com.radhi.Pokedex.fragment.PokemonName"
@@ -14,15 +15,26 @@
 
     <View
         android:layout_height="match_parent"
-        android:layout_width="10dp"
-        android:background="@drawable/vertical_separator"/>
+        android:layout_width="2dp"
+        android:background="#222"/>
 
     <android.support.v4.view.ViewPager
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/pager"
         android:layout_width="0dp"
         android:layout_weight="3"
         android:layout_height="match_parent"
-        android:background="@drawable/default_back_dual_pane"/>
+        android:background="@drawable/default_back_dual_pane">
+
+        <android.support.v4.view.PagerTitleStrip
+            android:id="@+id/pager_title_strip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:paddingBottom="4dp"
+            android:paddingTop="4dp"
+            android:textColor="#fff"
+            android:background="#222"/>
+
+    </android.support.v4.view.ViewPager>
 
 </LinearLayout>
