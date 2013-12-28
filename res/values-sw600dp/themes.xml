@@ -2,6 +2,6 @@
 <resources>
     <style
         name="Dialog.DarkActionBar.WhenLarge"
-        parent="@android:style/Theme.Holo.Light.DarkActionBar">
-    </style>l
+        parent="@android:style/Theme.Holo.Light.Dialog.NoActionBar">
+    </style>
 </resources>
