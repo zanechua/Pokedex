@@ -12,6 +12,9 @@ public class ActivityMoveDetail extends Activity {
         super.onCreate(savedInstanceState);
         moveID = getIntent().getStringExtra(ActivityMain.MOVE_ID);
 
+        String moveName = getIntent().getStringExtra(ActivityMain.MOVE_NAME);
+        this.setTitle(moveName);
+
         setContentView(R.layout.activity_move_detail);
         getWindow().setBackgroundDrawable(null);
     }
