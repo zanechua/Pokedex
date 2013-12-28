@@ -3,5 +3,5 @@
     <style
         name="Dialog.DarkActionBar.WhenLarge"
         parent="@android:style/Theme.Holo.Light.DarkActionBar">
-    </style>l
+    </style>
 </resources>
