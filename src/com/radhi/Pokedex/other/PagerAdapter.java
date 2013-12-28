@@ -31,6 +31,7 @@ public class PagerAdapter extends FragmentPagerAdapter {
             case 1:return "DATA";
             case 2:return "STATS";
             case 3:return "MOVE";
+            case 4:return "FORM";
         }
         return null;
     }
