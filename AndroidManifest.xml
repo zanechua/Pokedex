@@ -3,11 +3,13 @@
 <manifest 
     xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.radhi.Pokedex"
-    android:versionCode="3"
-    android:versionName="1">
+    android:versionCode="6"
+    android:versionName="1.25">
 
-    <uses-permission
-        android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <uses-sdk
         android:minSdkVersion="14"
@@ -33,12 +35,18 @@
 
         <activity
             android:name=".activity.ActivityDetails"
+            android:parentActivityName=".activity.ActivityMain"
             android:configChanges="orientation|screenSize"/>
 
         <activity
             android:name=".activity.ActivityMoveDetail"
             android:configChanges="orientation|screenSize"
-            android:theme="@android:style/Theme.Holo.Light.Dialog.NoActionBar.MinWidth"/>
+            android:theme="@style/Dialog.DarkActionBar.WhenLarge"/>
+
+        <activity
+            android:name=".activity.ActivityForm"
+            android:configChanges="orientation|screenSize"
+            android:theme="@style/Dialog.DarkActionBar.WhenLarge"/>
 
     </application>
 
