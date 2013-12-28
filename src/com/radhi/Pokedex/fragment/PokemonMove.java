@@ -66,8 +66,11 @@ public class PokemonMove extends Fragment {
         listMove.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String[] rowData = listMove.getItemAtPosition(position).toString().split(Database.SPLIT);
+
                 Intent intent = new Intent(activity, ActivityMoveDetail.class);
-                intent.putExtra(ActivityMain.MOVE_ID, listMove.getItemAtPosition(position).toString().split(Database.SPLIT)[0]);
+                intent.putExtra(ActivityMain.MOVE_ID, rowData[0]);
+                intent.putExtra(ActivityMain.MOVE_NAME, rowData[1]);
                 startActivity(intent);
             }
         });
