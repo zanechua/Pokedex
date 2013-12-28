@@ -30,12 +30,15 @@ public class PokemonAppearance extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_pokemon_appearance, container, false);
         pokemon = getArguments().getParcelable(ActivityMain.POKEMON_DATA);
+        String form_id = getArguments().getString(ActivityMain.POKEMON_FORM_ID,null);
 
         ImageView imgArt = (ImageView) view.findViewById(R.id.imgSugimoriArt);
         LinearLayout boxSprite = (LinearLayout) view.findViewById(R.id.boxSprite);
         LinearLayout boxFemale = (LinearLayout) view.findViewById(R.id.boxFemale);
 
-        ID = pokemon.ID();
+        if (form_id != null) ID = form_id;
+        else ID = pokemon.ID();
+
         imgFront = (ImageView) view.findViewById(R.id.imgFront);
         imgBack = (ImageView) view.findViewById(R.id.imgBack);
         txtSprite = (TextView) view.findViewById(R.id.txtSprite);
