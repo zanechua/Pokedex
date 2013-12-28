@@ -17,7 +17,7 @@ import java.io.InputStream;
 
 public class Database extends SQLiteAssetHelper {
     private static final String DATABASE_NAME = "pokedex_data";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
     public static final String UNKNOWN = "-";
     public static final String SPLIT = "ǁ";
 
