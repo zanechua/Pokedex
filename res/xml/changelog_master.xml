@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<changelog>
+    <release version="1.25" versioncode="6" >
+        <change>Add menu to download image</change>
+        <change>Add info about Pokémon with multiple form, e.g. Unown, Vivilion, etc</change>
+        <change>Add Mega Evolution data</change>
+    </release>
+
+    <release version="1.00" versioncode="3" >
+        <change>Improved performance and stability</change>
+        <change>Fix image not loaded in KitKat</change>
+        <change>Add some details in Pokémon Move</change>
+    </release>
+
+    <release version="0.95" versioncode="1">
+        <change>First release</change>
+    </release>
+</changelog>
