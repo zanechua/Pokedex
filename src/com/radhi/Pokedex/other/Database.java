@@ -23,7 +23,7 @@ public class Database extends SQLiteAssetHelper {
 
     public Database(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        setForcedUpgradeVersion(2);
+        setForcedUpgradeVersion(3);
     }
 
     private Cursor getCursor(String query, String[] args) {
