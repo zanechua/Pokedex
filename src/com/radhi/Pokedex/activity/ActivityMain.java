@@ -13,11 +13,9 @@ import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
-import android.view.ContextThemeWrapper;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.SearchView;
 import com.radhi.Pokedex.R;
 import com.radhi.Pokedex.fragment.*;
 import com.radhi.Pokedex.fragment.PokemonName.OnPokemonSelectedListener;
@@ -28,6 +26,7 @@ import com.radhi.Pokedex.other.PagerAdapter;
 import com.radhi.Pokedex.other.ZipHelper;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
@@ -59,9 +58,9 @@ public class ActivityMain extends FragmentActivity implements OnPokemonSelectedL
         registerReceiver(onComplete,
                 new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 
-        DarkThemeChangeLog cl = new DarkThemeChangeLog(this);
+        ChangeLog cl = new ChangeLog(this);
         if (cl.isFirstRun())
-            cl.getFullLogDialog().show();
+            cl.getLogDialog().show();
     }
 
     @Override
@@ -75,37 +74,6 @@ public class ActivityMain extends FragmentActivity implements OnPokemonSelectedL
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_menu, menu);
 
-        MenuItem searchItem = menu.findItem(R.id.action_search);
-        SearchView searchView = (SearchView) searchItem.getActionView();
-        searchView.setQueryHint("Pokemon's name");
-
-        final PokemonName pokemonName =
-                (PokemonName) getFragmentManager().findFragmentById(R.id.frag_pokemon_name);
-
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String q) {return false;}
-
-            @Override
-            public boolean onQueryTextChange(String q) {
-                if (pokemonName != null && pokemonName.isInLayout())
-                    pokemonName.filterList(q);
-                return true;
-            }
-        });
-
-        searchItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
-            @Override
-            public boolean onMenuItemActionExpand(MenuItem item) {return true;}
-
-            @Override
-            public boolean onMenuItemActionCollapse(MenuItem item) {
-                if (pokemonName != null && pokemonName.isInLayout())
-                    pokemonName.filterList("");
-                return true;
-            }
-        });
-
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -117,9 +85,7 @@ public class ActivityMain extends FragmentActivity implements OnPokemonSelectedL
         String Name = data[1];
 
         if (mPager != null) {
-            if (mPager.getBackground() != null) mPager.setBackgroundDrawable(null);
             if (mPager.getChildCount() > 1) getSupportFragmentManager().getFragments().clear();
-
             this.setTitle(Name);
             makePage make = new makePage();
             make.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,ID);
@@ -135,6 +101,12 @@ public class ActivityMain extends FragmentActivity implements OnPokemonSelectedL
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId())
         {
+            case R.id.action_search:
+                final PokemonName pokemonName =
+                        (PokemonName) getFragmentManager().findFragmentById(R.id.frag_pokemon_name);
+                if (pokemonName != null && pokemonName.isInLayout())
+                    pokemonName.showSearch();
+                return true;
             case R.id.menu_art:
                 startDownload(ART_URL,"Sugimori Art","Sugimori art for Pokédex","Art.zip");
                 zipLocation = UNZIP_TARGET + "Art.zip";
@@ -148,8 +120,10 @@ public class ActivityMain extends FragmentActivity implements OnPokemonSelectedL
         }
     }
 
-    public class makePage extends AsyncTask<String, Void, List<Fragment>> {
+    public class makePage extends AsyncTask<String, Void, Void> {
         ProgressDialog ringProgressDialog;
+        List<Fragment> fragmentList;
+        List<String> titleList;
 
         @Override
         protected void onPreExecute() {
@@ -157,30 +131,39 @@ public class ActivityMain extends FragmentActivity implements OnPokemonSelectedL
         }
 
         @Override
-        protected List<Fragment> doInBackground(String... ID) {
+        protected Void doInBackground(String... ID) {
             Pokemon pokemon = new Pokemon(getBaseContext(),ID[0]);
             Bundle args = new Bundle();
             args.putParcelable(ActivityMain.POKEMON_DATA,pokemon);
 
-            List<Fragment> fragmentList = new Vector<Fragment>();
+            fragmentList = new Vector<Fragment>();
             fragmentList.add(Fragment.instantiate(getBaseContext(), PokemonAppearance.class.getName(), args));
             fragmentList.add(Fragment.instantiate(getBaseContext(), PokemonData.class.getName(), args));
             fragmentList.add(Fragment.instantiate(getBaseContext(), PokemonStat.class.getName(), args));
             fragmentList.add(Fragment.instantiate(getBaseContext(), PokemonMove.class.getName(), args));
-            if (pokemon.OtherForm().length > 1)
-                fragmentList.add(Fragment.instantiate(getBaseContext(), PokemonForm.class.getName(), args));
 
-            return fragmentList;
+            titleList = new ArrayList<String>();
+            titleList.add("APPEARANCE");
+            titleList.add("DATA");
+            titleList.add("STATS");
+            titleList.add("MOVE");
+
+            if (pokemon.OtherForm().length > 1) {
+                fragmentList.add(Fragment.instantiate(getBaseContext(), PokemonForm.class.getName(), args));
+                titleList.add("FORM");
+            }
+
+            return null;
         }
 
         @Override
-        protected void onPostExecute(List<Fragment> result) {
-            ringProgressDialog.dismiss();
-            PagerAdapter mPagerAdapter = new PagerAdapter(getSupportFragmentManager(), result);
+        protected void onPostExecute(Void result) {
+            PagerAdapter mPagerAdapter = new PagerAdapter(getSupportFragmentManager(), fragmentList, titleList);
             ViewPager mPager = (ViewPager) findViewById(R.id.pager);
             mPager.setAdapter(mPagerAdapter);
             mPager.setOffscreenPageLimit(5);
             getWindow().setBackgroundDrawable(null);
+            ringProgressDialog.dismiss();
         }
     }
 
@@ -230,19 +213,19 @@ public class ActivityMain extends FragmentActivity implements OnPokemonSelectedL
 
         @Override
         protected void onPostExecute(Void result) {
-            ringProgressDialog.dismiss();
-
             File f = new File(zipLocation);
             if (f.exists()) f.delete();
+
+            ringProgressDialog.dismiss();
         }
     }
 
-    /**
-     * Example that shows how to create a themed dialog.
-     */
-    public static class DarkThemeChangeLog extends ChangeLog {
-        public DarkThemeChangeLog(Context context) {
-            super(new ContextThemeWrapper(context, R.style.Dialog_DarkActionBar_WhenLarge));
-        }
+    @Override
+    public void onBackPressed() {
+        final PokemonName pokemonName =
+                (PokemonName) getFragmentManager().findFragmentById(R.id.frag_pokemon_name);
+        if (pokemonName != null && pokemonName.isInLayout() && pokemonName.isSearching())
+            pokemonName.showSearch();
+        else super.onBackPressed();
     }
 }
