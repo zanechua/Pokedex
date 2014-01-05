@@ -12,6 +12,7 @@ import com.radhi.Pokedex.fragment.*;
 import com.radhi.Pokedex.object.Pokemon;
 import com.radhi.Pokedex.other.PagerAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
@@ -31,8 +32,10 @@ public class ActivityDetails extends FragmentActivity {
         mPage.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,ID);
     }
 
-    private class makePage extends AsyncTask<String, Void, List<Fragment>> {
+    private class makePage extends AsyncTask<String, Void, Void> {
         ProgressDialog ringProgressDialog;
+        List<Fragment> fragmentList;
+        List<String> titleList;
 
         @Override
         protected void onPreExecute() {
@@ -40,30 +43,39 @@ public class ActivityDetails extends FragmentActivity {
         }
 
         @Override
-        protected List<Fragment> doInBackground(String... ID) {
+        protected Void doInBackground(String... ID) {
             Pokemon pokemon = new Pokemon(getBaseContext(),ID[0]);
             Bundle args = new Bundle();
             args.putParcelable(ActivityMain.POKEMON_DATA,pokemon);
 
-            List<Fragment> fragmentList = new Vector<Fragment>();
+            fragmentList = new Vector<Fragment>();
             fragmentList.add(Fragment.instantiate(getBaseContext(), PokemonAppearance.class.getName(), args));
             fragmentList.add(Fragment.instantiate(getBaseContext(), PokemonData.class.getName(), args));
             fragmentList.add(Fragment.instantiate(getBaseContext(), PokemonStat.class.getName(), args));
             fragmentList.add(Fragment.instantiate(getBaseContext(), PokemonMove.class.getName(), args));
-            if (pokemon.OtherForm().length > 1)
-                fragmentList.add(Fragment.instantiate(getBaseContext(), PokemonForm.class.getName(), args));
 
-            return fragmentList;
+            titleList = new ArrayList<String>();
+            titleList.add("APPEARANCE");
+            titleList.add("DATA");
+            titleList.add("STATS");
+            titleList.add("MOVE");
+
+            if (pokemon.OtherForm().length > 1) {
+                fragmentList.add(Fragment.instantiate(getBaseContext(), PokemonForm.class.getName(), args));
+                titleList.add("FORM");
+            }
+
+            return null;
         }
 
         @Override
-        protected void onPostExecute(List<Fragment> result) {
-            ringProgressDialog.dismiss();
-            PagerAdapter mPagerAdapter = new PagerAdapter(getSupportFragmentManager(), result);
+        protected void onPostExecute(Void result) {
+            PagerAdapter mPagerAdapter = new PagerAdapter(getSupportFragmentManager(), fragmentList, titleList);
             ViewPager mPager = (ViewPager) findViewById(R.id.pager);
             mPager.setAdapter(mPagerAdapter);
             mPager.setOffscreenPageLimit(5);
             getWindow().setBackgroundDrawable(null);
+            ringProgressDialog.dismiss();
         }
     }
 }
