@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp"
+    android:background="@drawable/bg"
+    android:layout_marginLeft="10dp"
+    android:layout_marginTop="10dp"
+    android:layout_marginRight="10dp"
+    android:layout_marginBottom="5dp">
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TableRow>
+            <EditText
+                android:id="@+id/txtPokemonName"
+                android:imeOptions="flagNoExtractUi"
+                android:layout_weight="1"
+                android:layout_span="2"
+                android:hint="@string/search_pokemon_name"
+                android:singleLine="true"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:id="@+id/txtClear"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:text="@string/clear_text"
+                android:background="@drawable/bg_button"
+                android:visibility="gone"/>
+        </TableRow>
+
+        <TableRow android:layout_marginBottom="4dp">
+            <TextView android:text="@string/label_generation"/>
+
+            <Spinner
+                android:id="@+id/spinGeneration"
+                android:layout_weight="1"
+                android:entries="@array/array_generation"/>
+        </TableRow>
+
+        <TableRow android:layout_marginBottom="4dp">
+            <TextView android:text="@string/label_color"/>
+
+            <Spinner
+                android:id="@+id/spinColor"
+                android:layout_weight="1"
+                android:entries="@array/array_color"/>
+        </TableRow>
+
+        <TableRow android:layout_marginBottom="4dp">
+            <TextView android:text="@string/label_type1"/>
+
+            <Spinner
+                android:id="@+id/spinType1"
+                android:layout_weight="1"
+                android:entries="@array/array_type"/>
+        </TableRow>
+
+        <TableRow android:layout_marginBottom="4dp">
+            <TextView android:text="@string/label_type2"/>
+
+            <Spinner
+                android:id="@+id/spinType2"
+                android:layout_weight="1"
+                android:entries="@array/array_type"/>
+        </TableRow>
+
+        <CheckBox
+            android:id="@+id/checkIsBaby"
+            android:text="@string/label_baby"
+            android:layout_marginBottom="8dp"/>
+
+        <CheckBox
+            android:id="@+id/checkHasGenderDiff"
+            android:text="@string/label_gender_diff"
+            android:layout_marginBottom="8dp"/>
+
+        <TextView
+            android:id="@+id/txtTap"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/label_tap_to_clear"
+            android:textSize="10sp"
+            android:singleLine="true"
+            android:gravity="center_horizontal"/>
+    </TableLayout>
+</ScrollView>
