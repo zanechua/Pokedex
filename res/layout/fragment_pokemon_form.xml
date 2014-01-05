@@ -4,7 +4,7 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:background="#eee">
+              android:background="@color/default_background">
 
     <ListView
         android:id="@+id/listPokemonForm"
