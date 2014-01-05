@@ -8,10 +8,12 @@ import java.util.List;
 
 public class PagerAdapter extends FragmentPagerAdapter {
     private List<Fragment> fragments;
+    private List<String> title;
 
-    public PagerAdapter(FragmentManager fm, List<Fragment> fragments) {
+    public PagerAdapter(FragmentManager fm, List<Fragment> fragments, List<String> title) {
         super(fm);
         this.fragments = fragments;
+        this.title = title;
     }
 
     @Override
@@ -26,13 +28,6 @@ public class PagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public CharSequence getPageTitle(int position) {
-        switch (position) {
-            case 0:return "APPEARANCE";
-            case 1:return "DATA";
-            case 2:return "STATS";
-            case 3:return "MOVE";
-            case 4:return "FORM";
-        }
-        return null;
+        return title.get(position);
     }
 }
