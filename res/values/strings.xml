@@ -5,6 +5,63 @@
     <!--Di row_layout.xml-->
     <string name="iconDesc">Pokemon icon</string>
 
+    <!--Di advanced filter pokemon name-->
+    <string name="search_pokemon_name">Pokémon\'s name</string>
+    <string name="clear_text">×</string>
+    <string name="label_generation">Generation</string>
+    <string name="label_color">Color</string>
+    <string name="label_type1">Type 1</string>
+    <string name="label_type2">Type 2</string>
+    <string name="label_baby">Is baby</string>
+    <string name="label_gender_diff">Has gender differences</string>
+    <string name="label_mega_evolution">Has mega evolution</string>
+    <string name="label_tap_to_clear">tap to clear filter</string>
+    <array name="array_generation">
+        <item>Doesn\'t matter</item>
+        <item>Generation I</item>
+        <item>Generation II</item>
+        <item>Generation III</item>
+        <item>Generation IV</item>
+        <item>Generation V</item>
+        <item>Generation VI</item>
+    </array>
+
+    <array name="array_color">
+        <item>Doesn\'t matter</item>
+        <item>Black</item>
+        <item>Blue</item>
+        <item>Brown</item>
+        <item>Gray</item>
+        <item>Green</item>
+        <item>Pink</item>
+        <item>Purple</item>
+        <item>Red</item>
+        <item>White</item>
+        <item>Yellow</item>
+    </array>
+
+    <array name="array_type">
+        <item>Doesn\'t matter</item>
+        <item>Normal</item>
+        <item>Fighting</item>
+        <item>Flying</item>
+        <item>Poison</item>
+        <item>Ground</item>
+        <item>Rock</item>
+        <item>Bug</item>
+        <item>Ghost</item>
+        <item>Steel</item>
+        <item>Fire</item>
+        <item>Water</item>
+        <item>Grass</item>
+        <item>Electric</item>
+        <item>Psychic</item>
+        <item>Ice</item>
+        <item>Dragon</item>
+        <item>Dark</item>
+        <item>Fairy</item>
+    </array>
+
     <!--Di page_appearance.xml-->
     <string name="imgSugimoriDesc">Sugimori art</string>
     <string name="imgSpriteDesc">Normal sprite image</string>
