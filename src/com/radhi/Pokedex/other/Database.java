@@ -17,36 +17,42 @@ import java.io.InputStream;
 
 public class Database extends SQLiteAssetHelper {
     private static final String DATABASE_NAME = "pokedex_data";
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 5;
     public static final String UNKNOWN = "-";
     public static final String SPLIT = "ǁ";
 
     public Database(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        setForcedUpgradeVersion(3);
+        setForcedUpgradeVersion(5);
     }
 
     private Cursor getCursor(String query, String[] args) {
         return getReadableDatabase().rawQuery(query, args);
     }
 
-    public String[] getPokemonList(String nm) {
-        Cursor c = getCursor("" +
-                "SELECT " +
-                "nm.pokemon_id, nm.eng_name, " +
-                "tp1.type_id, ifnull(tp2.type_id,'0') " +
-                "FROM " +
-                "pokemon_name as nm " +
-                "LEFT JOIN " +
-                "(SELECT pokemon_id, type_id FROM pokemon_type WHERE slot = 1) as tp1 " +
-                "ON nm.pokemon_id = tp1.pokemon_id " +
-                "LEFT JOIN " +
-                "(SELECT pokemon_id, type_id FROM pokemon_type WHERE slot = 2) as tp2 " +
-                "ON nm.pokemon_id = tp2.pokemon_id " +
-                "WHERE nm.eng_name LIKE ? " +
-                "ORDER BY nm.pokemon_id",
-                new String[] {nm}
-        );
+    public String[] getPokemonList(String nm, String gen, String color, String type1, String type2,
+                                   Boolean isBaby, Boolean hasGenderDiff) {
+        String queryName = nm.isEmpty() ? "%" : "%" + nm + "%";
+        String queryGen = gen.equals("0") ? "" : "AND sp.generation_id = " + gen + " ";
+        String queryColor = color.equals("0") ? "" : "AND sp.color_id = " + color + " ";
+        String queryType1 = type1.equals("0") ? "" : "AND (tp1.type_id = " + type1 + " OR tp2.type_id = " + type1 + ") ";
+        String queryType2 = type2.equals("0") ? "" : "AND (tp1.type_id = " + type2 + " OR tp2.type_id = " + type2 + ") ";
+        String queryBaby = isBaby ? "AND sp.is_baby = 1 " : "";
+        String queryGender = hasGenderDiff ? "AND sp.has_gender_differences = 1 " : "";
+
+        String query = "" +
+                "SELECT sp.id, nm.eng_name, tp1.type_id, IfNULL(tp2.type_id,'0') " +
+                "FROM pokemon_species as sp " +
+                "LEFT JOIN pokemon_name as nm " +
+                    "ON sp.id = nm.pokemon_id " +
+                "LEFT JOIN (SELECT pokemon_id, type_id FROM pokemon_type WHERE slot = 1) as tp1 " +
+                    "ON tp1.pokemon_id = sp.id " +
+                "LEFT JOIN (SELECT pokemon_id, type_id FROM pokemon_type WHERE slot = 2) as tp2 " +
+                    "ON tp2.pokemon_id = sp.id " +
+                "WHERE sp.identifier LIKE ? " +
+                queryGen + queryColor + queryType1 + queryType2 + queryBaby + queryGender;
+
+        Cursor c = getCursor(query, new String[]{queryName});
 
         String[] ID = new String[c.getCount()];
         if (c.moveToFirst()) for (int n = 0; n < c.getCount(); n++) {
@@ -354,11 +360,13 @@ public class Database extends SQLiteAssetHelper {
 
     public String[] getPokemonMoveVersion(String id) {
         Cursor c = getCursor("" +
-                "SELECT pokemon_move.version_group_id, version.name " +
-                "FROM pokemon_move LEFT JOIN version ON pokemon_move.version_group_id = version.version_id " +
-                "WHERE pokemon_move.pokemon_id = ? " +
-                "GROUP BY pokemon_move.version_group_id " +
-                "ORDER BY pokemon_move.version_group_id", new String[] {id});
+                "SELECT mv.version_group_id, vg.name " +
+                "FROM pokemon_move as mv " +
+                "LEFT JOIN version_group as vg " +
+                "ON mv.version_group_id = vg.version_group_id " +
+                "WHERE mv.pokemon_id = ? " +
+                "GROUP BY mv.version_group_id " +
+                "ORDER BY mv.version_group_id", new String[] {id});
 
         String[] version;
         if (c.moveToFirst()) {
@@ -427,7 +435,7 @@ public class Database extends SQLiteAssetHelper {
 
         c = getCursor("" +
                 "SELECT f.id, " +
-                "CASE LENGTH(nm.pokemon_name) WHEN 0 THEN '" + name + "' ELSE nm.pokemon_name END as Name, " +
+                "CASE LENGTH(nm.pokemon_name) WHEN 0 THEN \"" + name + "\" ELSE nm.pokemon_name END as Name, " +
                 "tp1.type_id, IFNULL(tp2.type_id,'0'), f.pokemon_id " +
                 "FROM pokemon as p " +
                 "LEFT JOIN pokemon_form as f " +
