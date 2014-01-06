@@ -14,7 +14,7 @@ Pokédex, in short, is encyclopedia of every species in the series of Pokémon g
 * Move
 * Etc
 
-I built this application using IntelliJ Idea 13 Community Edition. This app is compatible with Android >= 3.0, and already tested on following device:
+I built this application using IntelliJ Idea 13 Community Edition. This app is compatible with Android 4.0+, and already tested on following device:
 
 * Samsung Galaxy Note N7000
 * Samsung Galaxy Tab 7
@@ -24,6 +24,8 @@ I built this application using IntelliJ Idea 13 Community Edition. This app is c
 * Lenovo S880
 * Axioo Picopad 7 GCC
 * Cross A7s
+
+This app does not contain any picture, but you can download it through the menu in application. For more detail, see [wiki page](https://github.com/Acrophobic/Pokedex/wiki#adding-image).
 
 Pokémon
 -------
