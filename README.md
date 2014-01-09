@@ -33,11 +33,8 @@ Pokémon © 2002-2013 Pokémon. © 1995-2013 Nintendo/Creatures Inc./GAME FREAK 
 
 Data Source
 -----------
-Database, image, and sprites for this application is taken from :
-* Veekun, in his [site](http://veekun.com) and his [git](http://git.veekun.com)
-* [Bulbapedia](http://bulbapedia.bulbagarden.net), the community driven Pokémon encyclopedia
-* [LegendaryPokemon](http://www.legendarypokemon.net/), where I took some of Sugimori Art
-* [Serebii](http://www.serebii.net), where I took some sprites for Pokémon X/Y and Mega Evolution
+* Database is taken from Veekun's [git](http://git.veekun.com/pokedex.git/tree/HEAD:/pokedex/data/csv). I just convert it from CSV to SQLITE.
+* For image and sprites, you can see [Pokédex-Media](https://github.com/Acrophobic/Pokedex-Media) in my repository.
 
 Acknowledgements
 ---------------
