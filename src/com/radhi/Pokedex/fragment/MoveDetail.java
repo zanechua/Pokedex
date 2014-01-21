@@ -47,7 +47,7 @@ public class MoveDetail extends Fragment {
         txtMoveName.setText(move.moveID() + ". " + move.Name());
         txtMoveDescription.setText(Html.fromHtml(getDescription(move)));
         Database.setTypeName(txtMoveType, Integer.valueOf(move.Type()));
-        txtMoveCategory.setText(move.Category());
+        Database.setCategoryResource(txtMoveCategory,move.Category());
         txtMovePower.setText(move.Power());
         txtMoveAccuracy.setText(move.Accuracy());
         txtMovePP.setText(move.PP());

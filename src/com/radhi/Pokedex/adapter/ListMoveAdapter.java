@@ -23,10 +23,12 @@ public class ListMoveAdapter extends ArrayAdapter<String> {
 
     static class viewHolder {
         public LinearLayout rowMove;
-        public TextView txtMoveID;
-        public TextView txtMoveName;
-        public TextView txtMoveType;
         public TextView txtMoveLevel;
+        public TextView txtMoveName;
+        public TextView txtMovePower;
+        public TextView txtMoveAccuracy;
+        public TextView txtMoveType;
+        public TextView txtMoveCategory;
     }
 
     @Override
@@ -40,20 +42,24 @@ public class ListMoveAdapter extends ArrayAdapter<String> {
 
             viewHolder v = new viewHolder();
             v.rowMove = (LinearLayout) rowView.findViewById(R.id.rowMove);
-            v.txtMoveID = (TextView) rowView.findViewById(R.id.txtMoveID);
             v.txtMoveName = (TextView) rowView.findViewById(R.id.txtMoveName);
-            v.txtMoveType = (TextView) rowView.findViewById(R.id.txtMoveType);
+            v.txtMovePower = (TextView) rowView.findViewById(R.id.txtMovePower);
+            v.txtMoveAccuracy = (TextView) rowView.findViewById(R.id.txtMoveAccuracy);
             v.txtMoveLevel = (TextView) rowView.findViewById(R.id.txtMoveLevel);
+            v.txtMoveType = (TextView) rowView.findViewById(R.id.txtMoveType);
+            v.txtMoveCategory = (TextView) rowView.findViewById(R.id.txtMoveCategory);
             rowView.setTag(v);
         }
 
         viewHolder holder = (viewHolder) rowView.getTag();
 
         String[] rowData = moveData[position].split(Database.SPLIT);
-        holder.txtMoveID.setText(rowData[0] + ".");
         holder.txtMoveName.setText(rowData[1]);
-        holder.txtMoveLevel.setText(rowData[2].equals("0") ? "" : "(lv " + rowData[2] + ")");
+        holder.txtMoveLevel.setText(rowData[2].equals("0") ? "" : "lv " + rowData[2]);
+        holder.txtMovePower.setText(rowData[4].equals("0") ? "" : rowData[4]);
+        holder.txtMoveAccuracy.setText(rowData[5].equals("0") ? "" : rowData[5]);
         Database.setTypeName(holder.txtMoveType, Integer.valueOf(rowData[3]));
+        Database.setCategoryResource(holder.txtMoveCategory, Integer.valueOf(rowData[6]));
 
         return rowView;
     }

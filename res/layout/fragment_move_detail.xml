@@ -58,7 +58,10 @@
 
             <TextView
                 android:id="@+id/txtMoveCategory"
-                style="@style/defaultStyle"
+                android:layout_width="70dp"
+                android:layout_height="20dp"
+                style="@style/basicType"
+                android:layout_marginRight="8dp"
                 android:layout_toRightOf="@id/lblMoveType"
                 android:layout_below="@id/txtMoveType"
                 android:layout_marginBottom="16dp"/>

@@ -405,7 +405,7 @@ public class Database extends SQLiteAssetHelper {
 
     public String[] getPokemonMoveList(String id, String version, String method) {
         Cursor c = getCursor("" +
-                "SELECT m.move_id, nm.name, m.level, mv.type_id " +
+                "SELECT m.move_id, nm.name, m.level, mv.type_id, mv.power, mv.accuracy, mv.damage_class_id " +
                 "FROM pokemon_move as m LEFT JOIN move_name as nm " +
                 "ON m.move_id = nm.move_id LEFT JOIN move as mv " +
                 "ON m.move_id = mv.move_id " +
@@ -421,7 +421,10 @@ public class Database extends SQLiteAssetHelper {
                 moveList[n] = c.getString(0) + SPLIT +
                         c.getString(1) + SPLIT +
                         c.getString(2) + SPLIT +
-                        c.getString(3);
+                        c.getString(3) + SPLIT +
+                        c.getString(4) + SPLIT +
+                        c.getString(5) + "%" + SPLIT +
+                        c.getString(6);
                 c.moveToNext();
             }
         }
@@ -588,7 +591,25 @@ public class Database extends SQLiteAssetHelper {
             else imageView.setImageResource(R.drawable.unknown_small);
         }
     }
+    public static void setCategoryResource(TextView tv, String category) {
+        setCategoryResource(tv,category.equals("Status") ? 1 : category.equals("Physical") ? 2 : 3);
+    }
+    public static void setCategoryResource(TextView tv, int category_id) {
+        int bg_id = 0;
+        switch (category_id){
+            case 1:
+                bg_id = R.drawable.bg_status;
+                break;
+            case 2:
+                bg_id = R.drawable.bg_physical;
+                break;
+            case 3:
+                bg_id = R.drawable.bg_special;
+                break;
 
+        }
+        tv.setBackgroundResource(bg_id);
+    }
     public static void setTypeName(TextView tv, int type_id) {
         String type_name;
         int bg_id;
