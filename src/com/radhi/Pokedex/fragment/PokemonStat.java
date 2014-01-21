@@ -15,6 +15,7 @@ import com.radhi.Pokedex.adapter.ListStatAdapter;
 import com.radhi.Pokedex.object.Pokemon;
 
 public class PokemonStat extends Fragment {
+    public static final int MAX = 255;
     private Activity activity;
 
     @Override
