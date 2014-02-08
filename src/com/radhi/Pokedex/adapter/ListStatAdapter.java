@@ -1,6 +1,7 @@
 package com.radhi.Pokedex.adapter;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.radhi.Pokedex.R;
+import com.radhi.Pokedex.fragment.PokemonStat;
 import com.radhi.Pokedex.other.Database;
 
 public class ListStatAdapter extends ArrayAdapter<String> {
@@ -27,6 +29,13 @@ public class ListStatAdapter extends ArrayAdapter<String> {
         public TextView graphStat;
         public TextView graphAccentStat;
         public TextView txtMaxStat;
+    }
+
+    private int getStatColor(int stat){
+        return stat < 50? R.color.statLow :
+               stat < 90? R.color.statMedium :
+               stat < 130? R.color.statHigh :
+                       R.color.statVeryHigh;
     }
 
     @Override
@@ -53,10 +62,13 @@ public class ListStatAdapter extends ArrayAdapter<String> {
         holder.txtStat.setText(rowData[1]);
         holder.txtMaxStat.setText(rowData[2]);
 
-        float weight = (float)(Double.parseDouble(rowData[1]) / Double.parseDouble(rowData[2]) * 10);
+        int baseStat = Integer.parseInt(rowData[1]);
+        float weight = (float) baseStat / PokemonStat.MAX * 10;
+
+        holder.graphStat.setBackgroundResource(getStatColor(baseStat));
 
         holder.graphStat.setLayoutParams(
-                new LinearLayout.LayoutParams(0,ViewGroup.LayoutParams.WRAP_CONTENT,weight));
+                new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, weight));
         holder.graphAccentStat.setLayoutParams(
                 new LinearLayout.LayoutParams(0,ViewGroup.LayoutParams.WRAP_CONTENT,10-weight));
 
