@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
+
+    <GridView
+        android:id="@+id/listPokemon"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:columnWidth="250dp"
+        android:numColumns="auto_fit"
+        android:verticalSpacing="5dp"
+        android:horizontalSpacing="7dp"
+        android:padding="7dp"
+        android:clipToPadding="false"
+        android:stretchMode="columnWidth"
+        android:fastScrollEnabled="true"
+        android:fadeScrollbars="true"
+        android:drawSelectorOnTop="true"
+        android:overScrollMode="never"/>
+
+    <ScrollView
+        android:id="@+id/scrollFilter"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:overScrollMode="never"
+        android:background="@color/background_color"
+        android:visibility="gone">
+        <include layout="@layout/pokemon_filter"/>
+    </ScrollView>
+
+    <TextView
+        android:id="@+id/shadingView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_toRightOf="@id/scrollFilter"
+        android:layout_alignWithParentIfMissing="true"
+        android:background="@color/black_color"
+        android:alpha="0.75"
+        android:visibility="gone"/>
+</RelativeLayout>
