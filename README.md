@@ -16,7 +16,7 @@ DéxDroid is Pokédex (Pokémon encyclopedia) for Android. It contains data of a
 * Evolution (including Mega Evolution)
 * Etc.
 
-This app does not contain any picture, but you can download it through the menu in application. For more detail, see [wiki page](https://github.com/Acrophobic/Pokedex/wiki#adding-image).
+You can download this app in [Play Store](https://play.google.com/store/apps/details?id=com.radhi.Pokedex). This app does not contain any picture, but you can download it through the menu in application. For more detail, see [wiki page](https://github.com/Acrophobic/Pokedex/wiki#adding-image).
 
 Pokémon
 -------
