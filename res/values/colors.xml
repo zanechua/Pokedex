@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:xliff="http://schemas.android.com/apk/res/com.radhi.Pokedex">
-    <color name="statLow">#f66</color>
-    <color name="statMedium">#ee3</color>
-    <color name="statHigh">#ac3</color>
-    <color name="statVeryHigh">#3e3</color>
-</resources>
