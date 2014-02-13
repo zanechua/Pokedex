@@ -36,7 +36,7 @@ public class ListDexAdapter extends ArrayAdapter<String> {
         txtDexName.setText(item[0]);
         txtDexNumber.setText(item[1]);
 
-        if (position == nMax-1) rowDex.setBackgroundDrawable(null);
+        if (position == nMax-1) rowDex.setBackgroundResource(android.R.color.transparent);
 
         return convertView;
     }
