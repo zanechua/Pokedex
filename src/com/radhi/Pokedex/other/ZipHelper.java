@@ -13,7 +13,6 @@ public class ZipHelper {
     public ZipHelper(String zipFileLocation, String unzipTarget) {
         this.zipFileLocation = zipFileLocation;
         this.unzipTarget = unzipTarget;
-
         dirChecker("");
     }
 
@@ -49,7 +48,7 @@ public class ZipHelper {
             zis.close();
             fis.close();
         }
-        catch (Exception e) {Log.e("DECOMPRESS","UNZIP",e);}
+        catch (Exception e) {Log.e("DECOMPRESS", "UNZIP", e);}
 
     }
 
