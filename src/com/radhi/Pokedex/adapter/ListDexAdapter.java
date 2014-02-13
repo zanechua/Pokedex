@@ -13,43 +13,31 @@ import com.radhi.Pokedex.other.Database;
 public class ListDexAdapter extends ArrayAdapter<String> {
     private final Context context;
     private final String[] dexData;
+    private final int nMax;
 
     public ListDexAdapter(Context context, String[] dexData) {
-        super(context, R.layout.row_pokemon_dex, dexData);
-
+        super(context, R.layout.row_dex_number, dexData);
         this.context = context;
         this.dexData = dexData;
-    }
-
-    static class viewHolder {
-        public LinearLayout rowDex;
-        public TextView lblDexName;
-        public TextView txtDexNumber;
+        nMax = dexData.length;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View rowView = convertView;
+        LayoutInflater inflater = (LayoutInflater) context
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        convertView = inflater.inflate(R.layout.row_dex_number, null);
 
-        if (rowView == null) {
-            LayoutInflater inflater = (LayoutInflater) context
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            rowView = inflater.inflate(R.layout.row_pokemon_dex, null);
+        LinearLayout rowDex = (LinearLayout) convertView.findViewById(R.id.rowDex);
+        TextView txtDexName = (TextView) convertView.findViewById(R.id.txtDexName);
+        TextView txtDexNumber = (TextView) convertView.findViewById(R.id.txtDexNumber);
 
-            viewHolder v = new viewHolder();
-            v.rowDex = (LinearLayout) rowView.findViewById(R.id.rowDex);
-            v.lblDexName = (TextView) rowView.findViewById(R.id.lblDexName);
-            v.txtDexNumber = (TextView) rowView.findViewById(R.id.txtDexNumber);
-            rowView.setTag(v);
-        }
-        viewHolder holder = (viewHolder) rowView.getTag();
+        String[] item = dexData[position].split(Database.SPLIT);
+        txtDexName.setText(item[0]);
+        txtDexNumber.setText(item[1]);
 
-        String[] rowData = dexData[position].split(Database.SPLIT);
-        holder.lblDexName.setText(rowData[0] + " ID");
-        holder.txtDexNumber.setText(rowData[1]);
+        if (position == nMax-1) rowDex.setBackgroundDrawable(null);
 
-        if (position == dexData.length - 1) holder.rowDex.setPadding(0,0,0,0);
-
-        return rowView;
+        return convertView;
     }
 }
