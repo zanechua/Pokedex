@@ -16,8 +16,6 @@ public class ActivityAboutChangelog extends Activity {
             "<li>Add list of location</li>\n" +
             "<li>Add Pok&eacute;mon evolution</li>\n" +
             "<li>Change Sugimori Art with bigger size and better quality</li>\n" +
-            "<li>Add help page</li>\n" +
-            "<li>Add donate page</li>\n" +
             "</ul>\n" +
             "<p style=\"text-align: justify;\">This new version has bigger APK size than the previous version, because the database in this version is not compressed. This make APK size bigger,&nbsp; but faster (because there is no need to extract data).</p>\n" +
             "<h3 style=\"text-align: justify;\">Pok&eacute;dex ver 1.5</h3>\n" +
