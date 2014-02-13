@@ -12,49 +12,37 @@ import com.radhi.Pokedex.other.Database;
 
 public class ListAbilityAdapter extends ArrayAdapter<String> {
     private final Context context;
-    private final String[] ability;
+    private final String[] abilityData;
+    private final int nAbility;
 
-    public ListAbilityAdapter(Context context, String[] ability) {
-        super(context, R.layout.row_pokemon_dex, ability);
-
+    public ListAbilityAdapter(Context context, String[] abilityData) {
+        super(context, R.layout.row_ability, abilityData);
         this.context = context;
-        this.ability = ability;
-    }
-
-    static class viewHolder {
-        public LinearLayout rowAbility;
-        public TextView lblAbilityName;
-        public TextView txtAbilityDescription;
+        this.abilityData = abilityData;
+        this.nAbility = abilityData.length;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View rowView = convertView;
+        LayoutInflater inflater = (LayoutInflater) context
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        convertView = inflater.inflate(R.layout.row_ability, null);
 
-        if (rowView == null) {
-            LayoutInflater inflater = (LayoutInflater) context
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            rowView = inflater.inflate(R.layout.row_pokemon_ability, null);
+        TextView txtAbilityName = (TextView) convertView.findViewById(R.id.txtAbilityName);
+        TextView txtAbilityDesc = (TextView) convertView.findViewById(R.id.txtAbilityDescription);
+        LinearLayout rowAbility = (LinearLayout) convertView.findViewById(R.id.rowAbility);
 
-            viewHolder v = new viewHolder();
-            v.rowAbility = (LinearLayout) rowView.findViewById(R.id.rowAbility);
-            v.lblAbilityName = (TextView) rowView.findViewById(R.id.lblAbilityName);
-            v.txtAbilityDescription = (TextView) rowView.findViewById(R.id.txtAbilityDescription);
-            rowView.setTag(v);
-        }
-        viewHolder holder = (viewHolder) rowView.getTag();
+        String[] item = abilityData[position].split(Database.SPLIT);
+        String label;
 
-        String[] rowData = ability[position].split(Database.SPLIT);
+        if (item[1].equals("0")) label = "Ability : ";
+        else label = "Hidden Ability : ";
 
-        String abilityName;
-        if (rowData[1].equals("0")) abilityName = "Ability : ";
-        else abilityName = "Hidden Ability : ";
+        txtAbilityName.setText(label + item[0]);
+        txtAbilityDesc.setText(item[2]);
 
-        holder.lblAbilityName.setText(abilityName + rowData[0]);
-        holder.txtAbilityDescription.setText(rowData[2]);
+        if (position == nAbility-1) rowAbility.setBackgroundDrawable(null);
 
-        if (position == ability.length - 1) holder.rowAbility.setPadding(0,0,0,-4);
-
-        return rowView;
+        return convertView;
     }
 }
