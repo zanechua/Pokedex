@@ -19,8 +19,6 @@
             android:id="@+id/menu_changelog"
             android:title="Changelog"/>
 
-        <item android:title="Help"/>
-
         <item
             android:id="@+id/menu_about"
             android:title="About"/>
