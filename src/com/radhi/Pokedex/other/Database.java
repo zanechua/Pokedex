@@ -2,60 +2,45 @@ package com.radhi.Pokedex.other;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.graphics.drawable.Drawable;
-import android.os.Environment;
-import android.widget.ImageView;
-import android.widget.TextView;
-import com.radhi.Pokedex.R;
-import com.radhi.Pokedex.other.Enum.Effectiveness;
-import com.radhi.Pokedex.other.Enum.ImgSize;
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
-
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 
 public class Database extends SQLiteAssetHelper {
     private static final String DATABASE_NAME = "pokedex_data";
-    private static final int DATABASE_VERSION = 5;
-    public static final String UNKNOWN = "-";
+    private static final int DATABASE_VERSION = 12;
     public static final String SPLIT = "ǁ";
 
     public Database(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        setForcedUpgradeVersion(5);
+        setForcedUpgrade(12);
     }
 
     private Cursor getCursor(String query, String[] args) {
         return getReadableDatabase().rawQuery(query, args);
     }
 
-    public String[] getPokemonList(String nm, String gen, String color, String type1, String type2,
-                                   Boolean isBaby, Boolean hasGenderDiff) {
-        String queryName = nm.isEmpty() ? "%" : "%" + nm + "%";
-        String queryGen = gen.equals("0") ? "" : "AND sp.generation_id = " + gen + " ";
-        String queryColor = color.equals("0") ? "" : "AND sp.color_id = " + color + " ";
-        String queryType1 = type1.equals("0") ? "" : "AND (tp1.type_id = " + type1 + " OR tp2.type_id = " + type1 + ") ";
-        String queryType2 = type2.equals("0") ? "" : "AND (tp1.type_id = " + type2 + " OR tp2.type_id = " + type2 + ") ";
-        String queryBaby = isBaby ? "AND sp.is_baby = 1 " : "";
-        String queryGender = hasGenderDiff ? "AND sp.has_gender_differences = 1 " : "";
+    public String[] getPokemonList(String name, String generation, String color, String type,
+                                   boolean isBaby, boolean hasGenderDiff) {
+        String q_name, q_generation, q_color, q_type, q_baby, q_gender;
+        q_name = name.isEmpty() ? "%" : "%" + name + "%";
+        q_generation = generation.isEmpty() ? "" : " AND sp.generation_id IN (" + generation + ") ";
+        q_color = color.isEmpty() ? "" : " AND sp.color_id IN (" + color + ") ";
+        q_type = type.isEmpty() ? "" : " AND tp.type_id IN (" + type + ") ";
+        q_baby = isBaby ? " AND sp.is_baby = 1 " : "";
+        q_gender = hasGenderDiff ? " AND sp.has_gender_differences = 1 " : "";
 
-        String query = "" +
-                "SELECT sp.id, nm.eng_name, tp1.type_id, IfNULL(tp2.type_id,'0') " +
+        String query = "SELECT sp.id, nm.eng_name, nm.species, GROUP_CONCAT(tp.type_id,'ǁ') " +
                 "FROM pokemon_species as sp " +
-                "LEFT JOIN pokemon_name as nm " +
-                    "ON sp.id = nm.pokemon_id " +
-                "LEFT JOIN (SELECT pokemon_id, type_id FROM pokemon_type WHERE slot = 1) as tp1 " +
-                    "ON tp1.pokemon_id = sp.id " +
-                "LEFT JOIN (SELECT pokemon_id, type_id FROM pokemon_type WHERE slot = 2) as tp2 " +
-                    "ON tp2.pokemon_id = sp.id " +
-                "WHERE sp.identifier LIKE ? " +
-                queryGen + queryColor + queryType1 + queryType2 + queryBaby + queryGender;
+                "LEFT JOIN pokemon_name as nm ON sp.id = nm.pokemon_id " +
+                "LEFT JOIN pokemon_type as tp ON tp.pokemon_id = sp.id " +
+                "WHERE sp.identifier LIKE \"" + q_name + "\"" +
+                q_generation + q_color + q_type + q_baby + q_gender +
+                "GROUP BY tp.pokemon_id";
 
-        Cursor c = getCursor(query, new String[]{queryName});
+        Cursor c = getCursor(query, new String[] {});
 
-        String[] ID = new String[c.getCount()];
-        if (c.moveToFirst()) for (int n = 0; n < c.getCount(); n++) {
+        int length = c.getCount();
+        String[] ID = new String[length];
+        if (c.moveToFirst()) for (int n = 0; n < length; n++) {
             ID[n] = c.getString(0) + SPLIT +
                     c.getString(1) + SPLIT +
                     c.getString(2) + SPLIT +
@@ -74,7 +59,7 @@ public class Database extends SQLiteAssetHelper {
                 "WHERE pokemon_id = ?",
                 new String[] {id});
 
-        String Name = UNKNOWN + SPLIT + UNKNOWN + SPLIT + UNKNOWN + SPLIT + UNKNOWN;
+        String Name = null;
         if (name.moveToFirst())
             Name = name.getString(0) + SPLIT +
                     name.getString(1) + SPLIT +
@@ -93,7 +78,7 @@ public class Database extends SQLiteAssetHelper {
                 "WHERE sp.id = ?",
                 new String[] {id});
 
-        String Habitat = UNKNOWN;
+        String Habitat = null;
         if (habitat.moveToFirst()) Habitat = habitat.getString(0);
 
         habitat.close();
@@ -108,7 +93,7 @@ public class Database extends SQLiteAssetHelper {
                 "ORDER BY slot",
                 new String[] {id});
 
-        String Type = "0" + SPLIT + "0";
+        String Type = null;
         if (type.moveToFirst()) {
             Type = type.getString(0) + SPLIT;
 
@@ -127,7 +112,7 @@ public class Database extends SQLiteAssetHelper {
                 "WHERE id = ?",
                 new String[] {id});
 
-        String HWE = "-1" + SPLIT + "-1" + SPLIT + UNKNOWN;
+        String HWE = null;
         if (hwe.moveToFirst())
             HWE = hwe.getString(0) + SPLIT +
                     hwe.getString(1) + SPLIT +
@@ -144,10 +129,12 @@ public class Database extends SQLiteAssetHelper {
                 "ON pokemon_species.shape_id = pokemon_shape.pokemon_shape_id " +
                 "WHERE pokemon_species.id = ?",new String[] {id});
 
-        String Shape = UNKNOWN;
-        if (shape.moveToFirst())
-            Shape = shape.getString(0) + " (" +
-                    shape.getString(1) + ")";
+        String Shape = null;
+        if (shape.moveToFirst()) {
+            if (shape.getString(1).length() > 12)
+                Shape = shape.getString(0) + "\n(" + shape.getString(1) + ")";
+            else Shape = shape.getString(0) + " (" + shape.getString(1) + ")";
+        }
 
         shape.close();
         return Shape;
@@ -160,7 +147,7 @@ public class Database extends SQLiteAssetHelper {
                 "ON pokemon_species.growth_rate_id = growth_rate.growth_rate_id " +
                 "WHERE pokemon_species.id = ?", new String[] {id});
 
-        String Growth = UNKNOWN;
+        String Growth = null;
         if (growth.moveToFirst()) Growth = growth.getString(0);
 
         growth.close();
@@ -171,23 +158,19 @@ public class Database extends SQLiteAssetHelper {
         Cursor gchhgf = getCursor("" +
                 "SELECT " +
                 "gender_rate, capture_rate, base_happiness, hatch_counter, " +
-                "has_gender_differences, forms_switchable " +
+                "has_gender_differences, forms_switchable, evolution_chain_id " +
                 "FROM pokemon_species " +
                 "WHERE id = ?", new String[] {id});
 
-        String GCHHGF = "-2" + SPLIT +
-                "-1" + SPLIT +
-                UNKNOWN + SPLIT +
-                UNKNOWN + SPLIT +
-                UNKNOWN + SPLIT +
-                UNKNOWN;
+        String GCHHGF = null;
         if (gchhgf.moveToFirst())
             GCHHGF = gchhgf.getString(0) + SPLIT +
                     gchhgf.getString(1) + SPLIT +
                     gchhgf.getString(2) + SPLIT +
                     gchhgf.getString(3) + SPLIT +
                     gchhgf.getString(4) + SPLIT +
-                    gchhgf.getString(5);
+                    gchhgf.getString(5) + SPLIT +
+                    gchhgf.getString(6);
 
         gchhgf.close();
         return GCHHGF;
@@ -200,7 +183,7 @@ public class Database extends SQLiteAssetHelper {
                 "ON pegg.egg_group_id = egg.egg_group_id " +
                 "WHERE pegg.pokemon_id = ?",new String[] {id});
 
-        String Egg = UNKNOWN;
+        String Egg = null;
         if (egg.moveToFirst()) {
             Egg = egg.getString(0);
             while (egg.moveToNext()) Egg += ", " + egg.getString(0);
@@ -217,12 +200,13 @@ public class Database extends SQLiteAssetHelper {
                 "ON pstat.stat_id = stat.stat_id " +
                 "WHERE pstat.pokemon_id = ?", new String[] {id});
 
-        String Effort = UNKNOWN;
+        String Effort = null;
         if (e.moveToFirst()) {
             Effort = "";
-            for (int n = 0; n < e.getCount(); n++) {
+            int length = e.getCount();
+            for (int n = 0; n < length; n++) {
                 if (!e.getString(1).equals("0")) {
-                    Effort += (Effort.equals("") ? "" : ", ");
+                    Effort += (Effort.equals("") ? "" : "\n");
                     Effort += e.getString(1) + " " + e.getString(0);
                 }
                 e.moveToNext();
@@ -241,14 +225,12 @@ public class Database extends SQLiteAssetHelper {
                 "WHERE dnum.species_id = ? " +
                 "ORDER BY dnum.pokedex_id", new String[] {id});
 
-        String[] dexData;
-        if (c.moveToFirst()) {
-            dexData = new String[c.getCount()];
-            for (int n = 0; n < c.getCount(); n++) {
-                dexData[n] = c.getString(0) + SPLIT + c.getString(1);
-                c.moveToNext();
-            }
-        } else dexData = new String[] {UNKNOWN + SPLIT + UNKNOWN};
+        int length = c.getCount();
+        String[] dexData = new String[length];
+        if (c.moveToFirst()) for (int n = 0; n < length; n++) {
+            dexData[n] = c.getString(0) + SPLIT + c.getString(1);
+            c.moveToNext();
+        }
 
         c.close();
         return dexData;
@@ -256,20 +238,19 @@ public class Database extends SQLiteAssetHelper {
 
     public String[] getPokemonDescription(String id) {
         Cursor c = getCursor("" +
-                "SELECT ver.name, des.description " +
+                "SELECT GROUP_CONCAT(ver.name,', '), des.description " +
                 "FROM pokemon_description as des LEFT JOIN version as ver " +
                 "ON des.version_id = ver.version_id " +
                 "WHERE des.pokemon_id = ? " +
+                "group by DES.DESCRIPTION " +
                 "ORDER BY des.version_id",new String[] {id});
 
-        String[] Desc;
-        if (c.moveToFirst()) {
-            Desc = new String[c.getCount()];
-            for (int n = 0; n < c.getCount(); n++) {
+        int length = c.getCount();
+        String[] Desc = new String[length];
+        if (c.moveToFirst()) for (int n = 0; n < length; n++) {
                 Desc[n] = c.getString(0) + SPLIT + c.getString(1);
                 c.moveToNext();
             }
-        } else Desc = new String[] {UNKNOWN + SPLIT + UNKNOWN};
 
         c.close();
         return Desc;
@@ -280,19 +261,19 @@ public class Database extends SQLiteAssetHelper {
                 "SELECT ability.name, pokemon_ability.is_hidden, ability.description " +
                 "FROM pokemon_ability LEFT JOIN ability " +
                 "ON pokemon_ability.ability_id = ability.ability_id " +
-                "WHERE pokemon_ability.pokemon_id = ?",new String[] {id});
+                "WHERE pokemon_ability.pokemon_id = ? " +
+                "GROUP BY pokemon_ability.ability_id " +
+                "ORDER by pokemon_ability.slot",new String[] {id});
 
-        String[] Ability;
-        if (c.moveToFirst()) {
-            Ability = new String[c.getCount()];
-            for (int n = 0; n < c.getCount(); n++) {
+        int length = c.getCount();
+        String[] Ability = new String[length];
+        if (c.moveToFirst()) for (int n = 0; n < length; n++) {
                 Ability[n] = c.getString(0) + SPLIT +
                         c.getString(1) + SPLIT +
                         c.getString(2);
 
                 c.moveToNext();
             }
-        } else Ability = new String[] {UNKNOWN + SPLIT + UNKNOWN + SPLIT + UNKNOWN};
 
         c.close();
         return Ability;
@@ -300,140 +281,67 @@ public class Database extends SQLiteAssetHelper {
 
     public String[] getPokemonStat(String id) {
         Cursor c = getCursor("" +
-                "SELECT stat.name, pokemon_stat.base_stat " +
-                "FROM pokemon_stat LEFT JOIN stat ON pokemon_stat.stat_id = stat.stat_id " +
-                "WHERE pokemon_stat.pokemon_id = ? " +
+                "SELECT base_stat " +
+                "FROM pokemon_stat " +
+                "WHERE pokemon_id = ? AND stat_id IN (1,2,3,4,5,6) " +
                 "ORDER BY pokemon_stat.stat_id", new String[] {id});
 
-        String[] stat;
-        if (c.moveToFirst())
-        {
-            stat = new String[c.getCount()];
-            for (int n = 0; n < c.getCount(); n++) {
-                stat[n] = c.getString(0) + SPLIT + c.getString(1) + SPLIT +
-                        getPokemonMaxStat(id,c.getString(0),c.getString(1));
+        int length = c.getCount();
+        String[] stat = new String[length];
+        if (c.moveToFirst()) for (int n = 0; n < length; n++) {
+                stat[n] = c.getString(0);
                 c.moveToNext();
             }
-        } else stat = new String[] {UNKNOWN + SPLIT + "0" + SPLIT + "0"};
 
+        c.close();
         return stat;
     }
 
-    public String[] getPokemonEfficacy(String type1, String type2, Effectiveness eff) {
-        Integer normal;
-        if (type2.equals("0")) normal = 100;
-        else normal = 10000;
+    public String[] getPokemonMaxStat(String id, String[] baseStat) {
+        int nStat = baseStat.length;
+        String[] maxStat = new String[nStat];
 
-        String criteria;
-        if (eff == Effectiveness.SUPER_EFFECTIVE) criteria = "> " + String.valueOf(normal);
-        else if (eff == Effectiveness.IMMUNE) criteria = "= 0";
-        else criteria = "BETWEEN 1 AND " + String.valueOf(normal-1);
+        for (int n = 0; n < nStat; n++) {
+            maxStat[n] = getPokemonMaxStat(id,n + 1,baseStat[n]);
+        }
 
-        String Query = String.format("" +
-                "SELECT tab1.damage_type_id, tab1.damage_factor * IFNULL(tab2.damage_factor,'1') " +
+        return maxStat;
+    }
+
+    public String[] getPokemonEfficacy(String type1, String type2) {
+        Cursor c = getCursor("SELECT " +
+                "tab1.damage_type_id as type_id, " +
+                "tab1.damage_factor * IFNULL(tab2.damage_factor,'100') / 100 as dmg " +
                 "FROM " +
-                "(SELECT damage_type_id, damage_factor FROM type_efficacy WHERE target_type_id = %1$s) as tab1 " +
+                "(SELECT damage_type_id, damage_factor FROM type_efficacy WHERE target_type_id = ?) as tab1 " +
                 "LEFT JOIN " +
-                "(SELECT damage_type_id, damage_factor FROM type_efficacy WHERE target_type_id = %2$s) as tab2 " +
+                "(SELECT damage_type_id, damage_factor FROM type_efficacy WHERE target_type_id = ?) as tab2 " +
                 "ON tab1.damage_type_id = tab2.damage_type_id " +
-                "WHERE tab1.damage_factor * ifNULL(tab2.damage_factor,'1') %3$s " +
-                "ORDER BY tab1.damage_type_id",type1,type2,criteria);
+                "WHERE NOT dmg = 100 " +
+                "ORDER BY dmg DESC, type_id ASC", new String[] {type1,type2});
 
-        Cursor c = getCursor(Query, null);
+        int length = c.getCount();
+        String[] efficacy = new String[length];
 
-        String[] efficacy;
         if (c.moveToFirst()) {
-            efficacy = new String[c.getCount()];
-            Double val;
-            for (int n = 0; n < c.getCount(); n++) {
-                val = Double.valueOf(c.getString(1)) / normal;
+            String value, symbol;
+            for (int n = 0; n < length; n++) {
+                value = c.getString(1);
+                if (value.equals("50")) symbol = "½";
+                else if (value.equals("25")) symbol = "¼";
+                else symbol = String.valueOf(Integer.valueOf(value) / 100);
 
-                efficacy[n] = c.getString(0) + SPLIT +
-                        (val > 1 || val == 0 ? String.format("%.0f",val) : String.valueOf(val));
-                c.moveToNext();
-            }
-        } else efficacy = new String[] {"0" + SPLIT + "1"};
-
-        c.close();
-        return efficacy;
-    }
-
-    public String[] getPokemonMoveVersion(String id) {
-        Cursor c = getCursor("" +
-                "SELECT mv.version_group_id, vg.name " +
-                "FROM pokemon_move as mv " +
-                "LEFT JOIN version_group as vg " +
-                "ON mv.version_group_id = vg.version_group_id " +
-                "WHERE mv.pokemon_id = ? " +
-                "GROUP BY mv.version_group_id " +
-                "ORDER BY mv.version_group_id", new String[] {id});
-
-        String[] version;
-        if (c.moveToFirst()) {
-            version = new String[c.getCount()];
-            for (int n = 0; n < c.getCount(); n++) {
-                version[n] = c.getString(0) + SPLIT + c.getString(1);
-                c.moveToNext();
-            }
-        } else version = new String[] {UNKNOWN + SPLIT + UNKNOWN};
-
-        c.close();
-        return version;
-    }
-
-    public String[] getPokemonMoveMethod(String id) {
-        Cursor c = getCursor("" +
-                "SELECT pmove.pokemon_move_method_id, mmeth.name " +
-                "FROM pokemon_move as pmove LEFT JOIN pokemon_move_method as mmeth " +
-                "ON pmove.pokemon_move_method_id = mmeth.pokemon_move_method_id " +
-                "WHERE pmove.pokemon_id = ? " +
-                "GROUP BY pmove.pokemon_move_method_id " +
-                "ORDER BY pmove.pokemon_move_method_id", new String[] {id});
-
-        String[] moveMethod;
-        if (c.moveToFirst()) {
-            moveMethod = new String[c.getCount()];
-            for (int n = 0; n < c.getCount(); n++) {
-                moveMethod[n] = c.getString(0) + SPLIT + c.getString(1);
-                c.moveToNext();
-            }
-        } else moveMethod = new String[] {UNKNOWN + SPLIT + UNKNOWN};
-
-        c.close();
-        return moveMethod;
-    }
-
-    public String[] getPokemonMoveList(String id, String version, String method) {
-        Cursor c = getCursor("" +
-                "SELECT m.move_id, nm.name, m.level, mv.type_id " +
-                "FROM pokemon_move as m LEFT JOIN move_name as nm " +
-                "ON m.move_id = nm.move_id LEFT JOIN move as mv " +
-                "ON m.move_id = mv.move_id " +
-                "WHERE pokemon_id = ? AND " +
-                "version_group_id = ? AND " +
-                "pokemon_move_method_id = ? " +
-                "ORDER BY m.level, m.[order]",
-                new String[] {id, version, method});
-
-        String[] moveList = new String[c.getCount()];
-        if (c.moveToFirst()) {
-            for (int n = 0; n < c.getCount(); n++) {
-                moveList[n] = c.getString(0) + SPLIT +
-                        c.getString(1) + SPLIT +
-                        c.getString(2) + SPLIT +
-                        c.getString(3);
+                efficacy[n] = c.getString(0) + SPLIT + symbol;
                 c.moveToNext();
             }
         }
 
         c.close();
-        return moveList;
+        return efficacy;
     }
 
     public String[] getPokemonForm(String id, String name) {
-        Cursor c;
-
-        c = getCursor("" +
+        Cursor c = getCursor("" +
                 "SELECT f.id, " +
                 "CASE LENGTH(nm.pokemon_name) WHEN 0 THEN \"" + name + "\" ELSE nm.pokemon_name END as Name, " +
                 "tp1.type_id, IFNULL(tp2.type_id,'0'), f.pokemon_id " +
@@ -450,8 +358,9 @@ public class Database extends SQLiteAssetHelper {
                 "ON p.id = tp2.pokemon_id " +
                 "WHERE p.species_id = ? ",new String[] {id});
 
-        String[] ID = new String[c.getCount()];
-        if (c.moveToFirst()) for (int n = 0; n < c.getCount(); n++) {
+        int length = c.getCount();
+        String[] ID = new String[length];
+        if (c.moveToFirst()) for (int n = 0; n < length; n++) {
             ID[n] = c.getString(0) + SPLIT +
                     c.getString(1) + SPLIT +
                     c.getString(2) + SPLIT +
@@ -464,196 +373,258 @@ public class Database extends SQLiteAssetHelper {
         return ID;
     }
 
-    public String getMoveData(String moveId) {
-        Cursor c = getCursor("" +
-                "SELECT mn.name, mv.generation_id, mv.type_id, " +
-                "mv.power, mv.pp, mv.accuracy, mt.name, md.name " +
-                "FROM move as mv LEFT JOIN move_name as mn " +
-                "ON mv.move_id = mn.move_id " +
-                "LEFT JOIN move_target as mt " +
-                "ON mv.target_id = mt.move_target_id " +
-                "LEFT JOIN move_damage_class as md " +
-                "ON mv.damage_class_id = md.move_damage_class_id " +
-                "WHERE mv.move_id = ?",
-                new String[] {moveId});
+    public String[] getPokemonEvolution(String evolution_id) {
+        Cursor c = getCursor("SELECT " +
+                "sp.evolves_from_species_id, " +
+                "sp.id, " +
+                "(SELECT eng_name FROM pokemon_name WHERE pokemon_id = sp.id) as evolved_name, " +
+                "ev.evolution_trigger_id, " +
+                "(SELECT name FROM item_description WHERE item_id = ev.trigger_item_id) as trigger_item, " +
+                "ev.minimum_level, " +
+                "ev.gender_id, " +
+                "loc.name, " +
+                "(SELECT name FROM item_description WHERE item_id = ev.held_item_id) as held_item, " +
+                "ev.time_of_day, " +
+                "mv.name as known_move, " +
+                "(SELECT name FROM type_name WHERE type_id = ev.known_move_type_id) as known_move_type, " +
+                "ev.minimum_happiness, " +
+                "ev.minimum_beauty, " +
+                "ev.minimum_affection, " +
+                "ev.relative_physical_stats, " +
+                "(SELECT eng_name FROM pokemon_name WHERE pokemon_id = ev.party_species_id) as party_species, " +
+                "(SELECT name FROM type_name WHERE type_id = ev.party_type_id) as party_type, " +
+                "(SELECT eng_name FROM pokemon_name WHERE pokemon_id = ev.trade_species_id) as trade_species, " +
+                "ev.needs_overworld_rain, " +
+                "ev.turn_upside_down " +
+                "FROM pokemon_species as sp " +
+                "LEFT JOIN pokemon_evolution as ev ON sp.id = ev.evolved_species_id " +
+                "LEFT JOIN location_name as loc ON ev.location_id = loc.location_id " +
+                "LEFT JOIN move_name as mv ON mv.move_id = ev.known_move_id " +
+                "WHERE sp.evolution_chain_id = ? " +
+                "ORDER BY sp.[order]", new String[] {evolution_id});
 
-        String moveData = UNKNOWN + SPLIT + UNKNOWN + SPLIT +
-                UNKNOWN + SPLIT + UNKNOWN + SPLIT +
-                UNKNOWN + SPLIT + UNKNOWN + SPLIT +
-                UNKNOWN + SPLIT + UNKNOWN + SPLIT;
-        if (c.moveToFirst()) {
-            moveData = c.getString(0) + SPLIT +
+        int length = c.getCount();
+        int column_count = c.getColumnCount();
+        String[] data = new String[length];
+        if (c.moveToFirst()) for (int n = 0; n < length; n++) {
+            data[n] = c.getString(0);
+            for (int a = 1; a < column_count; a++) data[n] += SPLIT + c.getString(a);
+            c.moveToNext();
+        }
+
+        c.close();
+        return data;
+    }
+
+    public String[] getPokemonVersion(String id) {
+        Cursor c = getCursor("" +
+                "SELECT DISTINCT e.version_id, v.name " +
+                "FROM encounters as e " +
+                "LEFT JOIN version as v ON e.version_id = v.version_id " +
+                "WHERE e.pokemon_id = ? " +
+                "ORDER BY e.version_id", new String[] {id});
+
+        int length = c.getCount();
+        String[] version = new String[length];
+        if (c.moveToFirst()) for (int n = 0; n < length; n++) {
+            version[n] = c.getString(0) + SPLIT + c.getString(1);
+            c.moveToNext();
+        }
+
+        c.close();
+        return version;
+    }
+
+    public String[] getPokemonEncounterMethod(String id) {
+        Cursor c = getCursor("" +
+                "SELECT DISTINCT es.encounter_method_id, em.name " +
+                "FROM encounters as e " +
+                "LEFT JOIN encounter_slots as es ON e.encounter_slot_id = es.id " +
+                "LEFT JOIN encounter_method as em ON es.encounter_method_id = em.encounter_method_id " +
+                "WHERE e.pokemon_id = ?", new String[] {id});
+
+        int length = c.getCount();
+        String[] encounter_method = new String[length];
+        if (c.moveToFirst()) for (int n = 0; n < length; n++) {
+            encounter_method[n] = c.getString(0) + SPLIT + c.getString(1);
+            c.moveToNext();
+        }
+
+        c.close();
+        return encounter_method;
+    }
+
+    public String[] getPokemonLocation(String id, String version_id, String method_id) {
+        Cursor c = getCursor("" +
+                "SELECT e.location_area_id, loc.name, " +
+                "ar.name, MIN(e.min_level), MAX(e.max_level), " +
+                "SUM(es.rarity) " +
+                "FROM encounters AS e " +
+                "LEFT JOIN location_area AS ar ON e.location_area_id = ar.id " +
+                "LEFT JOIN location_name AS loc ON ar.location_id = loc.location_id " +
+                "LEFT JOIN encounter_slots AS es ON e.encounter_slot_id = es.id " +
+                "WHERE e.pokemon_id = ? AND e.version_id = ? AND es.encounter_method_id = ? " +
+                "GROUP BY es.encounter_method_id, e.location_area_id " +
+                "ORDER BY es.encounter_method_id, loc.name", new String[] {id, version_id, method_id});
+
+        int length = c.getCount();
+        String[] location = new String[length];
+        if (c.moveToFirst()) for (int n = 0; n < length; n++) {
+            location[n] = c.getString(0) + SPLIT +
                     c.getString(1) + SPLIT +
                     c.getString(2) + SPLIT +
                     c.getString(3) + SPLIT +
                     c.getString(4) + SPLIT +
-                    c.getString(5) + SPLIT +
-                    c.getString(6) + SPLIT +
-                    c.getString(7);
+                    c.getString(5);
+            c.moveToNext();
         }
 
         c.close();
-        return moveData;
+        return location;
     }
 
-    public String getMoveAilment(String moveId) {
+    public String[] getPokemonDetailedLocation(String id, String version_id, String location_id, String method_id) {
         Cursor c = getCursor("" +
-                "SELECT ma.name " +
-                "FROM move_meta as mm " +
-                "LEFT JOIN move_meta_ailment as ma " +
-                "on mm.meta_ailment_id = ma.move_meta_ailment_id " +
-                "WHERE move_id = ?",
-                new String[] {moveId});
+                "SELECT e.min_level, e.max_level, SUM(es.rarity) " +
+                "FROM encounters as e  " +
+                "LEFT JOIN encounter_slots AS es ON e.encounter_slot_id = es.id " +
+                "WHERE e.pokemon_id = ? " +
+                "AND e.version_id = ? " +
+                "AND e.location_area_id = ? " +
+                "AND es.encounter_method_id = ? " +
+                "GROUP BY e.min_level, e.max_level",
+                new String[] {id, version_id, location_id, method_id});
 
-        String ailment = UNKNOWN;
-        if (c.moveToFirst()) ailment = c.getString(0);
+        int length = c.getCount();
+        String[] location = new String[length];
+        if (c.moveToFirst()) for (int n = 0; n < length; n++) {
+            location[n] = c.getString(0) + SPLIT +
+                    c.getString(1) + SPLIT +
+                    c.getString(2);
+            c.moveToNext();
+        }
 
         c.close();
-        return ailment;
+        return location;
     }
 
-    public String[] getMoveDescription(String moveId) {
+    public String[] getPokemonVersionGroup(String id) {
         Cursor c = getCursor("" +
-                "SELECT ver.name, des.description " +
-                "FROM move_description as des LEFT JOIN version as ver " +
-                "ON des.version_group_id = ver.version_id " +
-                "WHERE des.move_id = ? " +
-                "ORDER BY des.version_group_id",new String[] {moveId});
+                "SELECT DISTINCT pm.version_group_id, vg.name " +
+                "FROM pokemon_move as pm  " +
+                "LEFT JOIN version_group as vg ON pm.version_group_id = vg.version_group_id " +
+                "WHERE pm.pokemon_id = ? " +
+                "ORDER by pm.version_group_id", new String[] {id});
 
-        String[] Desc;
-        if (c.moveToFirst()) {
-            Desc = new String[c.getCount()];
-            for (int n = 0; n < c.getCount(); n++) {
-                Desc[n] = c.getString(0) + SPLIT + c.getString(1);
-                c.moveToNext();
-            }
-        } else Desc = new String[] {UNKNOWN + SPLIT + UNKNOWN};
+        int length = c.getCount();
+        String[] version_group = new String[length];
+        if (c.moveToFirst()) for (int n = 0; n < length; n++) {
+            version_group[n] = c.getString(0) + SPLIT + c.getString(1);
+            c.moveToNext();
+        }
 
         c.close();
-        return Desc;
+        return version_group;
     }
 
-    public String[] getMoveEfficacy(String type, Effectiveness eff) {
-        String criteria;
-        if (eff == Effectiveness.SUPER_EFFECTIVE) criteria = "> 100";
-        else if (eff == Effectiveness.IMMUNE) criteria = "= 0";
-        else criteria = "BETWEEN 1 AND 99";
-
+    public String[] getPokemonMoveMethod(String id) {
         Cursor c = getCursor("" +
-                "SELECT target_type_id, damage_factor " +
-                "FROM type_efficacy " +
-                "WHERE damage_type_id = ? " +
-                "AND damage_factor " + criteria, new String[] {type});
+                "SELECT DISTINCT pm.pokemon_move_method_id, pmm.name " +
+                "FROM pokemon_move as pm  " +
+                "LEFT JOIN pokemon_move_method as pmm " +
+                "ON pm.pokemon_move_method_id = pmm.pokemon_move_method_id " +
+                "WHERE pm.pokemon_id = ? " +
+                "ORDER by pm.pokemon_move_method_id", new String[] {id});
 
-        String[] efficacy;
-        if (c.moveToFirst()) {
-            efficacy = new String[c.getCount()];
-            Double val;
-            for (int n = 0; n < c.getCount(); n++) {
-                val = Double.valueOf(c.getString(1)) / 100;
-
-                efficacy[n] = c.getString(0) + SPLIT +
-                        (val > 1 || val == 0 ? String.format("%.0f",val) : String.valueOf(val));
-                c.moveToNext();
-            }
-        } else efficacy = new String[] {"0" + SPLIT + "1"};
+        int length = c.getCount();
+        String[] move_method = new String[length];
+        if (c.moveToFirst()) for (int n = 0; n < length; n++) {
+            move_method[n] = c.getString(0) + SPLIT + c.getString(1);
+            c.moveToNext();
+        }
 
         c.close();
-        return efficacy;
+        return move_method;
     }
 
-    private String getPokemonMaxStat(String id, String statName, String baseStat) {
-        if (id.equals("292") && statName.equals("HP")) return "1";
+    public String[] getPokemonMoveParentList(String id, String ver_id, String method_id) {
+        Cursor c = getCursor("" +
+                "SELECT pm.move_id, mn.name, GROUP_CONCAT(pm.level,' / '), itm.name, mv.type_id " +
+                "FROM pokemon_move AS pm " +
+                "LEFT JOIN move_name AS mn ON pm.move_id = mn.move_id " +
+                "LEFT JOIN move AS mv ON pm.move_id = mv.move_id " +
+                "LEFT JOIN machine as mch ON mch.move_id = pm.move_id  " +
+                "    AND mch.version_group_id = pm.version_group_id  " +
+                "    AND pm.pokemon_move_method_id = 4 " +
+                "LEFT JOIN item_description as itm ON mch.item_id = itm.item_id " +
+                "WHERE pm.pokemon_id = ?  " +
+                "AND pm.version_group_id = ?  " +
+                "AND pm.pokemon_move_method_id = ? " +
+                "GROUP BY pm.move_id " +
+                "ORDER BY pm.pokemon_move_method_id, pm.level, pm.[order]",
+                new String[] {id, ver_id, method_id});
+
+        int length = c.getCount();
+        String[] move_list = new String[length];
+        if (c.moveToFirst()) for (int n = 0; n < length; n++) {
+            move_list[n] = c.getString(0) + SPLIT +
+                            c.getString(1) + SPLIT +
+                            c.getString(2) + SPLIT +
+                            c.getString(3) + SPLIT +
+                            c.getString(4);
+            c.moveToNext();
+        }
+
+        c.close();
+        return move_list;
+    }
+
+    public String[] getPokemonMoveChildList(String id, String ver_id, String method_id) {
+        Cursor c = getCursor("" +
+                "SELECT " +
+                "pm.move_id, mv.type_id, ct.name,  " +
+                "mv.power, mv.pp, mv.accuracy, mt.name, mdc.name, " +
+                "mma.name, mm.ailment_chance, GROUP_CONCAT(md.description,'ǂ') " +
+                "FROM pokemon_move AS pm " +
+                "LEFT JOIN move AS mv ON pm.move_id = mv.move_id " +
+                "LEFT JOIN move_meta AS mm on pm.move_id = mm.move_id " +
+                "LEFT JOIN move_target AS mt on mv.target_id = mt.move_target_id " +
+                "LEFT JOIN move_damage_class as mdc on mv.damage_class_id = mdc.move_damage_class_id " +
+                "LEFT JOIN move_meta_ailment as mma on mm.meta_ailment_id = mma.move_meta_ailment_id " +
+                "LEFT JOIN contest_type as ct on mv.contest_type_id = ct.contest_type_id " +
+                "LEFT JOIN move_description as md on pm.move_id = md.move_id " +
+                "WHERE pm.pokemon_id = ?  " +
+                "AND pm.version_group_id = ?  " +
+                "AND pm.pokemon_move_method_id = ? " +
+                "GROUP BY pm.move_id " +
+                "ORDER BY pm.pokemon_move_method_id, pm.level, pm.[order]",
+                new String[] {id, ver_id, method_id});
+
+        int length = c.getCount();
+        int column_count = c.getColumnCount();
+        String[] move_list = new String[length];
+        if (c.moveToFirst()) for (int n = 0; n < length; n++) {
+            move_list[n] = c.getString(0);
+            for (int a = 1; a < column_count; a++) move_list[n] += SPLIT + c.getString(a);
+            c.moveToNext();
+        }
+
+        c.close();
+        return move_list;
+    }
+
+    private String getPokemonMaxStat(String id, int stat_id, String baseStat) {
+        if (id.equals("292") && stat_id == 1) return "1";
         else {
             int base = Integer.parseInt(baseStat);
             int max;
 
-            if (statName.equals("HP"))
+            if (stat_id == 1)
                 max = 31 + (2 * base) + (252/4) + 100 + 10;
             else
                 max = (int)((31 + (2 * base) + (252/4) + 5) * 1.1);
 
             return String.valueOf(max);
         }
-    }
-
-    public static void setImage(ImageView imageView, String imgLocation, ImgSize imgSize) {
-        try {
-            InputStream ims = new FileInputStream(
-                    Environment.getExternalStorageDirectory().toString() + "/Pokedex Image/" + imgLocation);
-            imageView.setImageDrawable(Drawable.createFromStream(ims, null));
-        } catch (IOException e) {
-            e.printStackTrace();
-            if (imgSize == ImgSize.LARGE) imageView.setImageResource(R.drawable.unknown_large);
-            else imageView.setImageResource(R.drawable.unknown_small);
-        }
-    }
-
-    public static void setTypeName(TextView tv, int type_id) {
-        String type_name;
-        int bg_id;
-
-        switch (type_id) {
-            case 1 : type_name = "normal";
-                bg_id = R.drawable.bg_normal;
-                break;
-            case 2 : type_name = "fighting";
-                bg_id = R.drawable.bg_fighting;
-                break;
-            case 3 : type_name = "flying";
-                bg_id = R.drawable.bg_flying;
-                break;
-            case 4 : type_name = "poison";
-                bg_id = R.drawable.bg_poison;
-                break;
-            case 5 : type_name = "ground";
-                bg_id = R.drawable.bg_ground;
-                break;
-            case 6 : type_name = "rock";
-                bg_id = R.drawable.bg_rock;
-                break;
-            case 7 : type_name = "bug";
-                bg_id = R.drawable.bg_bug;
-                break;
-            case 8 : type_name = "ghost";
-                bg_id = R.drawable.bg_ghost;
-                break;
-            case 9 : type_name = "steel";
-                bg_id = R.drawable.bg_steel;
-                break;
-            case 10 : type_name = "fire";
-                bg_id = R.drawable.bg_fire;
-                break;
-            case 11 : type_name = "water";
-                bg_id = R.drawable.bg_water;
-                break;
-            case 12 : type_name = "grass";
-                bg_id = R.drawable.bg_grass;
-                break;
-            case 13 : type_name = "electric";
-                bg_id = R.drawable.bg_electric;
-                break;
-            case 14 : type_name = "psychic";
-                bg_id = R.drawable.bg_psychic;
-                break;
-            case 15 : type_name = "ice";
-                bg_id = R.drawable.bg_ice;
-                break;
-            case 16 : type_name = "dragon";
-                bg_id = R.drawable.bg_dragon;
-                break;
-            case 17 : type_name = "dark";
-                bg_id = R.drawable.bg_dark;
-                break;
-            case 18 : type_name = "fairy";
-                bg_id = R.drawable.bg_fairy;
-                break;
-            default : type_name = "";
-                bg_id = R.drawable.bg_none;
-                break;
-        }
-
-        tv.setText(type_name);
-        tv.setBackgroundResource(bg_id);
     }
 }
