@@ -4,37 +4,21 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:baselineAligned="false">
 
-    <fragment
-        android:name="com.radhi.Pokedex.fragment.PokemonName"
-        android:id="@+id/frag_pokemon_name"
-        android:layout_width="0dp"
+    <FrameLayout
+        android:id="@+id/fragment_list_container"
+        android:layout_width="40dp"
         android:layout_weight="2"
-        android:layout_height="match_parent"/>
-
-    <View
         android:layout_height="match_parent"
-        android:layout_width="2dp"
-        android:background="#222"/>
+        android:background="@color/background_color"/>
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/pager"
+    <FrameLayout
+        android:id="@+id/fragment_container"
         android:layout_width="0dp"
         android:layout_weight="3"
         android:layout_height="match_parent"
-        android:background="@drawable/default_back_dual_pane">
-
-        <android.support.v4.view.PagerTitleStrip
-            android:id="@+id/pager_title_strip"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="top"
-            android:paddingBottom="4dp"
-            android:paddingTop="4dp"
-            android:textColor="#fff"
-            android:background="#222"/>
-
-    </android.support.v4.view.ViewPager>
+        android:background="#eaeaea"/>
 
 </LinearLayout>
