@@ -41,7 +41,7 @@ public class ListAbilityAdapter extends ArrayAdapter<String> {
         txtAbilityName.setText(label + item[0]);
         txtAbilityDesc.setText(item[2]);
 
-        if (position == nAbility-1) rowAbility.setBackgroundDrawable(null);
+        if (position == nAbility-1) rowAbility.setBackgroundResource(android.R.color.transparent);
 
         return convertView;
     }
