@@ -1,29 +1,20 @@
-Pokédex
-=======
-Pokédex, in short, is encyclopedia of every species in the series of Pokémon game. It contains data of 718 Pokémon species, from Pokémon generation I to generaton VI. Every entries of Pokédex is consisted by : 
+DéxDroid
+========
+DéxDroid is Pokédex (Pokémon encyclopedia) for Android. It contains data of all Pokémon species from every series of Pokémon game (Gen I to Gen VI). Every Pokémon's data is consisted by :
 
-* Image
-* Name
-* ID
-* Description
+* Image (Sugimori Art and sprites)
+* Name (English, Japanese, and Romaji name)
+* Dex number for all region
+* Description (from all Pokémon version)
 * Height
 * Weight
 * Ability
 * Type efficacy
 * Base stat
-* Move
-* Etc
-
-I built this application using IntelliJ Idea 13 Community Edition. This app is compatible with Android 4.0+, and already tested on following device:
-
-* Samsung Galaxy Note N7000
-* Samsung Galaxy Tab 7
-* Samsung Galaxy SIII Mini I8190
-* Sony Xperia Arc
-* Sony Xperia Z Ultra
-* Lenovo S880
-* Axioo Picopad 7 GCC
-* Cross A7s
+* Move (separated by version group)
+* Location (separated by Pokémon version)
+* Evolution (including Mega Evolution)
+* Etc.
 
 This app does not contain any picture, but you can download it through the menu in application. For more detail, see [wiki page](https://github.com/Acrophobic/Pokedex/wiki#adding-image).
 
@@ -33,14 +24,14 @@ Pokémon © 2002-2013 Pokémon. © 1995-2013 Nintendo/Creatures Inc./GAME FREAK 
 
 Data Source
 -----------
-* Database is taken from Veekun's [git](http://git.veekun.com/pokedex.git/tree/HEAD:/pokedex/data/csv). I just convert it from CSV to SQLITE.
+* Database is taken from Veekun's [git](http://git.veekun.com/pokedex.git/tree/HEAD:/pokedex/data/csv) or [Github](https://github.com/veekun/pokedex). I just convert it from CSV to SQLITE.
 * For image and sprites, you can see [Pokédex-Media](https://github.com/Acrophobic/Pokedex-Media) in my repository.
 
 Acknowledgements
 ---------------
 In this app, I use :
-* [Android SQLiteAssetHelper](https://github.com/jgilfelt/android-sqlite-asset-helper) library (created by [Jeff Gilfelt](https://github.com/jgilfelt)).
-* [ckChangeLog](https://github.com/cketti/ckChangeLog) (created by [cketti](https://github.com/cketti)).
+* [Android SQLiteAssetHelper](https://github.com/jgilfelt/android-sqlite-asset-helper) library by [Jeff Gilfelt](https://github.com/jgilfelt).
+* [Android Holo Colors Plugin](https://github.com/jeromevdl/android-holo-colors-idea-plugin) by [Jérôme Van Der Linden](https://github.com/jeromevdl)
 
 License
 ----------
