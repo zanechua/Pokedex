@@ -61,7 +61,7 @@ public class ListNameAdapter extends ArrayAdapter<String> {
 
         String[] dataRow = listName[position].split(Database.SPLIT);
         holder.makeList = new makeList(holder,dataRow);
-        holder.makeList.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        holder.makeList.execute();
 
         return convertView;
     }
