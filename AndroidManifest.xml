@@ -40,6 +40,10 @@
             android:name=".activity.ActivityAboutChangelog"
             android:parentActivityName=".activity.ActivityMain"/>
 
+        <activity
+            android:name=".activity.ActivityPokemonFilter"
+            android:theme="@style/Transucent_Pokedex_Red_Theme"/>
+
     </application>
 
 </manifest>
