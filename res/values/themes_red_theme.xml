@@ -20,4 +20,11 @@
         <item name="android:actionBarWidgetTheme">@style/WidgetRed_Theme</item>
     </style>
 
+    <style name="Transucent_Pokedex_Red_Theme" parent="@style/Pokedex_Red_Theme">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
 </resources>
