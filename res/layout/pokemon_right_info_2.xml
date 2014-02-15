@@ -86,7 +86,8 @@
                 android:layout_height="25dp"
                 android:textSize="12sp"
                 android:paddingRight="10dp"
-                android:gravity="center_vertical"/>
+                android:gravity="center_vertical"
+                android:singleLine="true"/>
 
             <TextView
                 android:id="@+id/txtType2"
@@ -95,7 +96,8 @@
                 android:layout_height="25dp"
                 android:textSize="12sp"
                 android:gravity="center_vertical"
-                android:visibility="gone"/>
+                android:visibility="gone"
+                android:singleLine="true"/>
         </LinearLayout>
 
         <GridLayout

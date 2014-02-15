@@ -198,7 +198,9 @@
             android:layout_below="@id/txtGrowth"
             style="@style/right_column"
             android:lineSpacingExtra="5dp"
-            android:paddingBottom="2dp"/>
+            android:paddingBottom="2dp"
+            android:singleLine="true"
+            android:ellipsize="end"/>
     </RelativeLayout>
 
     <LinearLayout
@@ -233,7 +235,7 @@
         <Spinner
             android:id="@+id/spinVersion"
             style="@style/right_column"
-            android:background="@drawable/bg_line"
+            android:background="@drawable/red_line_selected"
             android:spinnerMode="dialog"/>
 
         <TextView
@@ -244,7 +246,7 @@
         <Spinner
             android:id="@+id/spinEncounterMethod"
             style="@style/right_column"
-            android:background="@drawable/bg_line"
+            android:background="@drawable/red_line_selected"
             android:spinnerMode="dialog"/>
 
         <TextView
@@ -305,7 +307,7 @@
         <Spinner
             android:id="@+id/spinVersionGroup"
             style="@style/right_column"
-            android:background="@drawable/bg_line"
+            android:background="@drawable/red_line_selected"
             android:spinnerMode="dialog"/>
 
         <TextView
@@ -316,7 +318,7 @@
         <Spinner
             android:id="@+id/spinMoveMethod"
             style="@style/right_column"
-            android:background="@drawable/bg_line"
+            android:background="@drawable/red_line_selected"
             android:spinnerMode="dialog"/>
 
         <TextView
