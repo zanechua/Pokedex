@@ -15,7 +15,8 @@ public class Pokemon  {
 
     public Boolean hasGenderDifferences, hasDexNumber, hasDescription,
             hasAbility, hasStats, hasEfficacy, formSwitchable,
-            hasOtherForm, hasEvolution, hasLocation, hasMove;
+            hasOtherForm, hasEvolution, hasLocation, hasMove,
+            hasBaseData, hasData;
 
     public Pokemon(Context context, String ID) {
         this.ID = ID;
@@ -33,6 +34,8 @@ public class Pokemon  {
         RomajiName = array_name[2];
         Species = array_name[3].isEmpty() ? "" :
                 array_name[3] + " Pokémon";
+
+        hasData = !JapaneseName.isEmpty() && JapaneseName != null;
 
 //      Pokemon's habitat
         String habitat = DB.getPokemonHabitat(ID);
@@ -88,7 +91,8 @@ public class Pokemon  {
 
 //      Pokemon's base effort
         String effort = DB.getPokemonBaseEffort(ID);
-        BaseEffort = effort != null ? effort : "-";
+        hasBaseData = !effort.isEmpty() && effort != null;
+        BaseEffort = hasBaseData ? effort : "-";
 
 //      Pokemon's dex number
         DexNumber = DB.getPokedexNumber(ID);
