@@ -33,6 +33,7 @@ public class ListNameAdapter extends ArrayAdapter<String> {
         public TextView txtRowType1;
         public TextView txtRowType2;
         public ImageView imgRow;
+        public makeList makeList;
     }
 
     @Override
@@ -53,10 +54,14 @@ public class ListNameAdapter extends ArrayAdapter<String> {
             holder.imgRow = (ImageView) convertView.findViewById(R.id.imgRowIcon);
 
             convertView.setTag(holder);
-        } else holder = (viewHolder) convertView.getTag();
+        } else {
+            holder = (viewHolder) convertView.getTag();
+            holder.makeList.cancel(true);
+        }
 
         String[] dataRow = listName[position].split(Database.SPLIT);
-        new makeList(holder,dataRow).execute();
+        holder.makeList = new makeList(holder,dataRow);
+        holder.makeList.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
         return convertView;
     }
