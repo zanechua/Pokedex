@@ -26,7 +26,8 @@ public class PokemonDetails extends Fragment{
     private LinearLayout boxDescription, boxDexNumber, boxAbility,
             boxEvolution, boxOtherForm, boxTypeEfficacy, boxList;
     private TableLayout boxSprites;
-    private GridLayout boxStats, boxLocation, boxMove;
+    private RelativeLayout boxData;
+    private GridLayout boxStats, boxLocation, boxMove, boxBase;
     private Spinner spinVersion, spinEncounterMethod,
             spinVersionGroup, spinMoveMethod;
     private TextView txtDescVersion, txtDescription, txtSprites,
@@ -43,8 +44,15 @@ public class PokemonDetails extends Fragment{
     private Database DB;
 
     @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        this.activity = getActivity();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        setRetainInstance(true);
         View view = inflater.inflate(R.layout.pokemon_details, container, false);
         setComponentName(view);
         getArgumentValue();
@@ -88,12 +96,6 @@ public class PokemonDetails extends Fragment{
         }
     }
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        this.activity = getActivity();
-    }
-
     private void setComponentName(View v) {
         rightScroll = (ScrollView) v.findViewById(R.id.leftScroll);
 
@@ -103,6 +105,7 @@ public class PokemonDetails extends Fragment{
         imgShinyFront = (ImageView) v.findViewById(R.id.imgShinyFront);
         imgShinyBack = (ImageView) v.findViewById(R.id.imgShinyBack);
 
+        boxData = (RelativeLayout) v.findViewById(R.id.boxData);
         boxDescription = (LinearLayout) v.findViewById(R.id.boxDescription);
         boxDexNumber = (LinearLayout) v.findViewById(R.id.boxDexNumber);
         boxAbility = (LinearLayout) v.findViewById(R.id.boxAbility);
@@ -114,6 +117,7 @@ public class PokemonDetails extends Fragment{
         boxStats = (GridLayout) v.findViewById(R.id.boxStats);
         boxLocation = (GridLayout) v.findViewById(R.id.boxLocation);
         boxMove = (GridLayout) v.findViewById(R.id.boxMove);
+        boxBase = (GridLayout) v.findViewById(R.id.boxBase);
 
         txtDescVersion = (TextView) v.findViewById(R.id.txtVersionName);
         txtDescription = (TextView) v.findViewById(R.id.txtDescription);
@@ -280,17 +284,22 @@ public class PokemonDetails extends Fragment{
     }
 
     private void setPokemonData(Pokemon p) {
-        txtJapanese.setText(p.JapaneseName + " (" + p.RomajiName + ")");
-        txtSpecies.setText(p.Species);
-        txtHabitat.setText(p.Habitat);
-        txtGenderRatio.setText(p.Gender);
-        txtEgg.setText(p.EggGroups);
-        txtHatch.setText(p.HatchCounter);
-        txtGrowth.setText(p.GrowthRate);
-        txtCapture.setText(p.CaptureRate);
-        txtBaseExp.setText(p.BaseExperience);
-        txtBaseEffort.setText(p.BaseEffort);
-        txtBaseHappiness.setText(p.BaseHappiness);
+        if (p.hasData) {
+            txtJapanese.setText(p.JapaneseName + " (" + p.RomajiName + ")");
+            txtSpecies.setText(p.Species);
+            txtHabitat.setText(p.Habitat);
+            txtGenderRatio.setText(p.Gender);
+            txtEgg.setText(p.EggGroups);
+            txtHatch.setText(p.HatchCounter);
+            txtGrowth.setText(p.GrowthRate);
+            txtCapture.setText(p.CaptureRate);
+        } else boxData.setVisibility(View.GONE);
+
+        if (p.hasBaseData) {
+            txtBaseExp.setText(p.BaseExperience);
+            txtBaseEffort.setText(p.BaseEffort);
+            txtBaseHappiness.setText(p.BaseHappiness);
+        } else boxBase.setVisibility(View.GONE);
     }
 
     private void setPokemonStat(Pokemon p) {
