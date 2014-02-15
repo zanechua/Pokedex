@@ -12,5 +12,18 @@
         android:id="@+id/action_filter"
         android:icon="@drawable/ic_filter"
         android:title="@string/filter"
-        android:showAsAction="always"/>
+        android:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/menu_download"
+        android:title="Download image">
+        <menu>
+            <item
+                android:id="@+id/menu_art"
+                android:title="Sugimori art"/>
+            <item
+                android:id="@+id/menu_sprite"
+                android:title="Sprite"/>
+        </menu>
+    </item>
 </menu>
