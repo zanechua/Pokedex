@@ -1,55 +1,70 @@
 package com.radhi.Pokedex.fragment;
 
 import android.app.Activity;
+import android.app.DownloadManager;
+import android.app.NotificationManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.SparseArray;
+import android.support.v4.app.NotificationCompat;
 import android.view.*;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.GridView;
+import android.widget.SearchView;
 import com.radhi.Pokedex.R;
+import com.radhi.Pokedex.activity.ActivityPokemonFilter;
 import com.radhi.Pokedex.adapter.ListNameAdapter;
 import com.radhi.Pokedex.other.Database;
+import com.radhi.Pokedex.other.Other;
 import com.radhi.Pokedex.other.Other.pokemonInterface;
+import com.radhi.Pokedex.other.ZipHelper;
+
+import java.io.File;
 
 public class PokemonName extends Fragment {
     private Activity activity;
     private Database DB;
 
     private GridView gridPokemon;
-    private TextView txtShading;
-    private ScrollView scrollFilter;
-
-    private TextView txtFilterGeneration;
-    private SparseArray<CheckBox> listChkGeneration;
-    private boolean genVisible = false;
-
-    private TextView txtFilterType;
-    private SparseArray<CheckBox> listChkType;
-    private boolean typeVisible = false;
-
-    private TextView txtFilterColor;
-    private SparseArray<CheckBox> listChkColor;
-    private boolean colorVisible = false;
-
-    private CheckBox chkBaby, chkGenderDiff;
-    private TextView txtClearFilter;
 
     private String Name = "", Generation = "", Color = "", Type = "";
     private Boolean isBaby = false, hasGenderDiff = false;
 
     private pokemonInterface pokemonInterface;
 
+    private String unzipTarget;
+    private String zipName;
+    private DownloadManager mgr;
+    private NotificationManager notifManager;
+
+    private int byteBuffer = 1024;
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        this.activity = getActivity();
+        this.mgr = (DownloadManager)activity.getSystemService(Context.DOWNLOAD_SERVICE);
+        this.notifManager =
+                (NotificationManager)activity.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        activity.registerReceiver(onComplete,
+                new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        setRetainInstance(true);
+        unzipTarget = Other.ImageLocation;
         DB = new Database(activity);
         View view = inflater.inflate(R.layout.pokemon_name, container, false);
         setHasOptionsMenu(true);
-        setComponentName(view);
-        makeList();
 
-        setCLickListenerOnFilter();
-
+        gridPokemon = (GridView) view.findViewById(R.id.listPokemon);
         gridPokemon.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -59,14 +74,15 @@ public class PokemonName extends Fragment {
         });
 
         pokemonInterface = (pokemonInterface) activity;
+        makeList();
 
         return view;
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        this.activity = getActivity();
+    public void onDetach() {
+        super.onDetach();
+        activity.unregisterReceiver(onComplete);
     }
 
     @Override
@@ -86,7 +102,7 @@ public class PokemonName extends Fragment {
             @Override
             public boolean onQueryTextChange(String txt) {
                 Name = txt;
-                setFilter();
+                makeList();
                 return false;
             }
         });
@@ -96,12 +112,39 @@ public class PokemonName extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId())
         {
+            case R.id.menu_art:
+                Other.startDownload(mgr,Other.ArtURL, "Sugimori Art", "Sugimori art for Pokédex", "Art.zip");
+                byteBuffer = 16 * 1024;
+                zipName = "Art.zip";
+                return true;
+            case R.id.menu_sprite:
+                Other.startDownload(mgr,Other.SpritesURL,"Pokémon Sprites","Sprites for Pokédex","Sprites.zip");
+                byteBuffer = 3 * 1024;
+                zipName = "Sprites.zip";
+                return true;
             case R.id.action_filter:
-                toggleFilterArea();
+                Intent intent = new Intent(activity, ActivityPokemonFilter.class);
+                intent.putExtra(Other.PokemonFilterGeneration, Generation);
+                intent.putExtra(Other.PokemonFilterType, Type);
+                intent.putExtra(Other.PokemonFilterColor, Color);
+                intent.putExtra(Other.PokemonFilterBaby, isBaby);
+                intent.putExtra(Other.PokemonFilterGender, hasGenderDiff);
+                activity.startActivityForResult(intent, Other.PokemonFilterCode);
+                activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                 return true;
             default:
                 return false;
         }
+    }
+
+    public void makeFilter(String generation, String type, String color, boolean isBaby, boolean hasGenderDiff) {
+        this.Generation = generation;
+        this.Type = type;
+        this.Color = color;
+        this.isBaby = isBaby;
+        this.hasGenderDiff = hasGenderDiff;
+
+        makeList();
     }
 
     private void makeList() {
@@ -110,191 +153,47 @@ public class PokemonName extends Fragment {
         gridPokemon.setAdapter(adapter);
     }
 
-    private void setComponentName(View v) {
-        gridPokemon = (GridView) v.findViewById(R.id.listPokemon);
-        txtShading = (TextView) v.findViewById(R.id.shadingView);
-        scrollFilter = (ScrollView) v.findViewById(R.id.scrollFilter);
+    BroadcastReceiver onComplete = new BroadcastReceiver() {
+        public void onReceive(Context ctxt, Intent intent) {
+            File f = new File(unzipTarget);
+            if (f.exists()) f.delete();
 
-        txtFilterGeneration = (TextView) v.findViewById(R.id.txtFilterGeneration);
-        listChkGeneration = new SparseArray<CheckBox>();
-        listChkGeneration.put(0, (CheckBox) v.findViewById(R.id.chkGeneration1));
-        listChkGeneration.put(1, (CheckBox) v.findViewById(R.id.chkGeneration2));
-        listChkGeneration.put(2, (CheckBox) v.findViewById(R.id.chkGeneration3));
-        listChkGeneration.put(3, (CheckBox) v.findViewById(R.id.chkGeneration4));
-        listChkGeneration.put(4, (CheckBox) v.findViewById(R.id.chkGeneration5));
-        listChkGeneration.put(5, (CheckBox) v.findViewById(R.id.chkGeneration6));
-
-        txtFilterType = (TextView) v.findViewById(R.id.txtFilterType);
-        listChkType = new SparseArray<CheckBox>();
-        listChkType.put(0, (CheckBox) v.findViewById(R.id.chkTypeNormal));
-        listChkType.put(1, (CheckBox) v.findViewById(R.id.chkTypeFighting));
-        listChkType.put(2, (CheckBox) v.findViewById(R.id.chkTypeFlying));
-        listChkType.put(3, (CheckBox) v.findViewById(R.id.chkTypePoison));
-        listChkType.put(4, (CheckBox) v.findViewById(R.id.chkTypeGround));
-        listChkType.put(5, (CheckBox) v.findViewById(R.id.chkTypeRock));
-        listChkType.put(6, (CheckBox) v.findViewById(R.id.chkTypeBug));
-        listChkType.put(7, (CheckBox) v.findViewById(R.id.chkTypeGhost));
-        listChkType.put(8, (CheckBox) v.findViewById(R.id.chkTypeSteel));
-        listChkType.put(9, (CheckBox) v.findViewById(R.id.chkTypeFire));
-        listChkType.put(10, (CheckBox) v.findViewById(R.id.chkTypeWater));
-        listChkType.put(11, (CheckBox) v.findViewById(R.id.chkTypeGrass));
-        listChkType.put(12, (CheckBox) v.findViewById(R.id.chkTypeElectric));
-        listChkType.put(13, (CheckBox) v.findViewById(R.id.chkTypePsychic));
-        listChkType.put(14, (CheckBox) v.findViewById(R.id.chkTypeIce));
-        listChkType.put(15, (CheckBox) v.findViewById(R.id.chkTypeDragon));
-        listChkType.put(16, (CheckBox) v.findViewById(R.id.chkTypeDark));
-        listChkType.put(17, (CheckBox) v.findViewById(R.id.chkTypeFairy));
-
-        txtFilterColor = (TextView) v.findViewById(R.id.txtFilterColor);
-        listChkColor = new SparseArray<CheckBox>();
-        listChkColor.put(0, (CheckBox) v.findViewById(R.id.chkColorBlack));
-        listChkColor.put(1, (CheckBox) v.findViewById(R.id.chkColorBlue));
-        listChkColor.put(2, (CheckBox) v.findViewById(R.id.chkColorBrown));
-        listChkColor.put(3, (CheckBox) v.findViewById(R.id.chkColorGray));
-        listChkColor.put(4, (CheckBox) v.findViewById(R.id.chkColorGreen));
-        listChkColor.put(5, (CheckBox) v.findViewById(R.id.chkColorPink));
-        listChkColor.put(6, (CheckBox) v.findViewById(R.id.chkColorPurple));
-        listChkColor.put(7, (CheckBox) v.findViewById(R.id.chkColorRed));
-        listChkColor.put(8, (CheckBox) v.findViewById(R.id.chkColorWhite));
-        listChkColor.put(9, (CheckBox) v.findViewById(R.id.chkColorYellow));
-
-        chkBaby = (CheckBox) v.findViewById(R.id.chkIsBaby);
-        chkGenderDiff = (CheckBox) v.findViewById(R.id.chkHasGenderDiff);
-        txtClearFilter = (TextView) v.findViewById(R.id.txtClearFilter);
-    }
-
-    private void toggleFilterArea() {
-        if (scrollFilter.getVisibility() == View.GONE) {
-            scrollFilter.setVisibility(View.VISIBLE);
-            txtShading.setVisibility(View.VISIBLE);
-        } else {
-            scrollFilter.setVisibility(View.GONE);
-            txtShading.setVisibility(View.GONE);
+            UnzipFile unzip = new UnzipFile();
+            String zipLocation = unzipTarget + zipName;
+            unzip.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,new ZipHelper(zipLocation, unzipTarget));
         }
-    }
+    };
 
-    private void toggleVisibility(boolean visibility, SparseArray<CheckBox> listCheckBox, TextView txtFilter) {
-        int new_visibility = visibility ? View.GONE : View.VISIBLE;
-        int drawable_right = visibility ? R.drawable.ic_max_pokedex : R.drawable.ic_min_pokedex;
+    public class UnzipFile extends AsyncTask<ZipHelper,Void,Void> {
+        String zipLocation;
+        NotificationCompat.Builder notif;
 
-        txtFilter.setCompoundDrawablesWithIntrinsicBounds(0,0,drawable_right,0);
-        int nList = listCheckBox.size();
-        for (int n = 0; n < nList; n++)
-            listCheckBox.get(n).setVisibility(new_visibility);
-    }
-
-    private void clearFilter() {
-        int nGen = listChkGeneration.size();
-        int nType = listChkType.size();
-        int nColor = listChkColor.size();
-
-        for (int n = 0; n < nGen; n++) listChkGeneration.get(n).setChecked(false);
-        for (int n = 0; n < nType; n++) listChkType.get(n).setChecked(false);
-        for (int n = 0; n < nColor; n++) listChkColor.get(n).setChecked(false);
-
-        chkBaby.setChecked(false);
-        chkGenderDiff.setChecked(false);
-    }
-
-    private void setCLickListenerOnFilter() {
-        txtFilterGeneration.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toggleVisibility(genVisible, listChkGeneration, txtFilterGeneration);
-                genVisible = !genVisible;
-            }
-        });
-
-        txtFilterType.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toggleVisibility(typeVisible, listChkType, txtFilterType);
-                typeVisible = !typeVisible;
-            }
-        });
-
-        txtFilterColor.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toggleVisibility(colorVisible, listChkColor, txtFilterColor);
-                colorVisible = !colorVisible;
-            }
-        });
-
-        int nGeneration = listChkGeneration.size();
-        for (int n = 0; n < nGeneration; n++)
-            listChkGeneration.get(n).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setFilter();
-            }
-        });
-
-        int nType = listChkType.size();
-        for (int n = 0; n < nType; n++)
-            listChkType.get(n).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    setFilter();
-                }
-            });
-
-        int nColor = listChkColor.size();
-        for (int n = 0; n < nColor; n++)
-            listChkColor.get(n).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    setFilter();
-                }
-            });
-
-        chkBaby.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setFilter();
-            }
-        });
-
-        chkGenderDiff.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setFilter();
-            }
-        });
-
-        txtClearFilter.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!(Name.isEmpty() &&
-                        Generation.isEmpty() &&
-                        Color.isEmpty() &&
-                        !hasGenderDiff &&
-                        !isBaby)) {
-                clearFilter(); setFilter();}
-            }
-        });
-    }
-
-    private void setFilter() {
-        Generation = setFilterText(listChkGeneration);
-        Type = setFilterText(listChkType);
-        Color = setFilterText(listChkColor);
-        isBaby = chkBaby.isChecked();
-        hasGenderDiff = chkGenderDiff.isChecked();
-        makeList();
-    }
-
-    private String setFilterText (SparseArray<CheckBox> listCheckBox) {
-        String out = "";
-        String value;
-        int nList = listCheckBox.size();
-
-        for (int n = 0; n < nList; n++) if (listCheckBox.get(n).isChecked()) {
-            value = String.valueOf(n + 1);
-            if (out.isEmpty()) out += value;
-            else out += ", " + value;
+        @Override
+        protected void onPreExecute() {
+            notif = new NotificationCompat.Builder(activity);
+            notif.setContentTitle("Extracting " + zipName)
+                    .setContentText("Extracting data")
+                    .setSmallIcon(R.drawable.ic_extract)
+                    .setProgress(0, 0, true);
+            notifManager.notify(0, notif.build());
         }
 
-        return out;
+        @Override
+        protected Void doInBackground(ZipHelper... zip) {
+            zipLocation = zip[0].ZipFileLocation();
+            zip[0].unzip(byteBuffer);
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            File f = new File(zipLocation);
+            if (f.exists()) f.delete();
+
+            notif.setContentText("Extracting finished")
+                    .setProgress(0, 0, false);
+            notifManager.notify(0, notif.build());
+        }
     }
 }
