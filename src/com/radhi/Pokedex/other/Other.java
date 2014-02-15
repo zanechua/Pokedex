@@ -15,6 +15,13 @@ public class Other {
     public static final String PokemonId = "POKEMON_ID";
     public static final String PokemonImageId = "POKEMON_IMAGE_ID";
     public static final String PokemonName = "POKEMON_NAME";
+    public static final int PokemonFilterCode = 90;
+    public static final String PokemonFilterGeneration = "PoKEMON_FILTER_GENERATION";
+    public static final String PokemonFilterType = "PoKEMON_FILTER_TYPE";
+    public static final String PokemonFilterColor = "PoKEMON_FILTER_COLOR";
+    public static final String PokemonFilterBaby = "PoKEMON_FILTER_IS_BABY";
+    public static final String PokemonFilterGender = "PoKEMON_FILTER_HAS_GENDER_DIFF";
+
     public static final String ImageLocation =
             Environment.getExternalStorageDirectory().toString() + "/Pokedex Image/";
     public static final String ArtURL =
