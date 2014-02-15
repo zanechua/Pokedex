@@ -9,41 +9,48 @@ import com.radhi.Pokedex.R;
 import com.radhi.Pokedex.other.Other;
 
 public class ActivityAboutChangelog extends Activity {
-    private final static String changelog = "" +
-            "<h3 style=\"text-align: justify;\">Pok&eacute;dex ver 3</h3>\n" +
-            "<ul style=\"text-align: justify;\">\n" +
+    private final static String changelog = "<h3>Pok&eacute;dex ver 3.1</h3>\n" +
+            "<ul>\n" +
+            "<li>Fix crash when downloading image</li>\n" +
+            "<li>Fix crash when extracting data</li>\n" +
+            "<li>Better layout for tablet</li>\n" +
+            "<li>Better filter design</li>\n" +
+            "</ul>\n" +
+            "<p>Now you can using this app even when the app is still downloading and extracting the data.</p>\n" +
+            "<h3>Pok&eacute;dex ver 3</h3>\n" +
+            "<ul>\n" +
             "<li>Major UI overhaul</li>\n" +
             "<li>Add list of location</li>\n" +
             "<li>Add Pok&eacute;mon evolution</li>\n" +
             "<li>Change Sugimori Art with bigger size and better quality</li>\n" +
             "</ul>\n" +
-            "<p style=\"text-align: justify;\">This new version has bigger APK size than the previous version, because the database in this version is not compressed. This make APK size bigger,&nbsp; but faster (because there is no need to extract data).</p>\n" +
-            "<h3 style=\"text-align: justify;\">Pok&eacute;dex ver 1.5</h3>\n" +
-            "<ul style=\"text-align: justify;\">\n" +
+            "<p>This new version has bigger APK size than the previous version, because the database in this version is not compressed. This make APK size bigger,&nbsp; but faster (because there is no need to extract data).</p>\n" +
+            "<h3>Pok&eacute;dex ver 1.5</h3>\n" +
+            "<ul>\n" +
             "<li>Fix crash when opening Farfetch'd</li>\n" +
             "<li>Fix version name in Pok&eacute;mon move filter</li>\n" +
             "<li>Add advanced search for Pok&eacute;dex</li>\n" +
             "<li>Add info about available move for Pok&eacute;mon's alternative form</li>\n" +
             "</ul>\n" +
-            "</div>\n" +
-            "<h3 style=\"text-align: justify;\">Pok&eacute;dex ver 1.25</h3>\n" +
-            "<ul style=\"text-align: justify;\">\n" +
+            "<h3>Pok&eacute;dex ver 1.25</h3>\n" +
+            "<ul>\n" +
             "<li>Add menu to download image</li>\n" +
             "<li>Add info about Pok&eacute;mon with multiple form, e.g. Unown, Vivilon, etc.</li>\n" +
             "<li>Add <em>Mega Evolution</em> data</li>\n" +
             "</ul>\n" +
-            "<p style=\"text-align: justify;\">When downloading image, app will extract the data after download is finished. This may take several minutes, depending on your device.</p>\n" +
-            "<h3 style=\"text-align: justify;\">Pok&eacute;dex ver 1</h3>\n" +
-            "<ul style=\"text-align: justify;\">\n" +
+            "<p>When downloading image, app will extract the data after download is finished. This may take several minutes, depending on your device.</p>\n" +
+            "<h3>Pok&eacute;dex ver 1</h3>\n" +
+            "<ul>\n" +
             "<li>Improved performance and stability</li>\n" +
             "<li>Fix image not loaded in KitKat</li>\n" +
             "<li>Add some details in Pok&eacute;mon Move</li>\n" +
             "</ul>\n" +
-            "<p style=\"text-align: justify;\">If you have previous version installed, it will be slow on first load because app will replace old database with the new one. If it takes too long, please clear data in System Setting &rarr; App &rarr; Pokedex &rarr; tap Clear data</p>\n" +
-            "<h3 style=\"text-align: justify;\">Pok&eacute;dex ver 0.95</h3>\n" +
+            "<p>If you have previous version installed, it will be slow on first load because app will replace old database with the new one. If it takes too long, please clear data in System Setting &rarr; App &rarr; Pokedex &rarr; tap Clear data</p>\n" +
+            "<h3>Pok&eacute;dex ver 0.95</h3>\n" +
             "<ul>\n" +
-            "<li style=\"text-align: justify;\">Initial release</li>\n" +
-            "</ul>";
+            "<li>Initial release</li>\n" +
+            "</ul>\n" +
+            "<p>\"</p>";
 
     private final static String about = "" +
             "<h3 style=\"text-align: justify;\">D&eacute;xDroid</h3>\n" +
