@@ -71,6 +71,7 @@
     <string name="stat_SA">Base SA</string>
     <string name="stat_SD">Base SD</string>
     <string name="stat_SPD">Base SPD</string>
+    <string name="stat_TOT">Total Base</string>
     <string name="data_japanese">Japanese</string>
     <string name="data_species">Species</string>
     <string name="data_habitat">Habitat</string>

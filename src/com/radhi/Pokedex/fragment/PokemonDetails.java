@@ -36,8 +36,8 @@ public class PokemonDetails extends Fragment{
             txtGenderRatio, txtEgg, txtHatch, txtGrowth,
             txtCapture, txtBaseExp, txtBaseEffort, txtBaseHappiness,
             txtLblHP, txtLblATK, txtLblDEF, txtLblSA,
-            txtLblSD, txtLblSPD, txtHP, txtATK,
-            txtDEF, txtSA, txtSD, txtSPD,
+            txtLblSD, txtLblSPD, txtLblTOT, txtHP, txtATK,
+            txtDEF, txtSA, txtSD, txtSPD, txtTOT,
             txtLocation, txtReturn, txtMove;
     private ExpandableListView listPokemon;
     private ProgressBar progressPokemon;
@@ -144,12 +144,14 @@ public class PokemonDetails extends Fragment{
         txtLblSA = (TextView) v.findViewById(R.id.txtLblSA);
         txtLblSD = (TextView) v.findViewById(R.id.txtLblSD);
         txtLblSPD = (TextView) v.findViewById(R.id.txtLblSPD);
+        txtLblTOT = (TextView) v.findViewById(R.id.txtLblTOT);
         txtHP = (TextView) v.findViewById(R.id.txtHP);
         txtATK = (TextView) v.findViewById(R.id.txtATK);
         txtDEF = (TextView) v.findViewById(R.id.txtDEF);
         txtSA = (TextView) v.findViewById(R.id.txtSA);
         txtSD = (TextView) v.findViewById(R.id.txtSD);
         txtSPD = (TextView) v.findViewById(R.id.txtSPD);
+        txtTOT = (TextView) v.findViewById(R.id.txtTOT);
         txtLocation = (TextView) v.findViewById(R.id.txtLocation);
         txtMove = (TextView) v.findViewById(R.id.txtMove);
         txtReturn = (TextView) v.findViewById(R.id.txtReturn);
@@ -324,6 +326,7 @@ public class PokemonDetails extends Fragment{
             txtLblSA.setText("Max SA");
             txtLblSD.setText("Max SD");
             txtLblSPD.setText("Max SPD");
+            txtLblTOT.setText("Total");
         } else {
             txtLblHP.setText("Base HP");
             txtLblATK.setText("Base ATK");
@@ -331,6 +334,7 @@ public class PokemonDetails extends Fragment{
             txtLblSA.setText("Base SA");
             txtLblSD.setText("Base SD");
             txtLblSPD.setText("Base SPD");
+            txtLblTOT.setText("Total");
         }
 
         txtHP.setText(data[0]);
@@ -339,6 +343,7 @@ public class PokemonDetails extends Fragment{
         txtSA.setText(data[3]);
         txtSD.setText(data[4]);
         txtSPD.setText(data[5]);
+        txtTOT.setText(String.valueOf(Integer.parseInt(data[0]) + Integer.parseInt(data[1]) + Integer.parseInt(data[2]) + Integer.parseInt(data[3]) + Integer.parseInt(data[4]) + Integer.parseInt(data[5])));
     }
 
     private void setPokemonEfficacy(Pokemon p) {

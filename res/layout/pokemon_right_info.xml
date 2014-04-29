@@ -264,10 +264,21 @@
         <TextView
             android:id="@+id/txtLblSPD"
             android:text="@string/stat_SPD"
-            style="@style/left_column"/>
+            style="@style/left_column"
+            android:background="@drawable/bg_line"/>
 
         <TextView
             android:id="@+id/txtSPD"
+            style="@style/right_column"
+            android:background="@drawable/bg_line"/>
+
+        <TextView
+            android:id="@+id/txtLblTOT"
+            android:text="@string/stat_TOT"
+            style="@style/left_column"/>
+
+        <TextView
+            android:id="@+id/txtTOT"
             style="@style/right_column"/>
     </GridLayout>
 
